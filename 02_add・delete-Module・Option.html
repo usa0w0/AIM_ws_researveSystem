@@ -1,54 +1,55 @@
 <script>
-      const newWORKSHOP = {
-        name: "新規講座", 
-        date: "yyyy/mm/dd", 
-        start_time: "HH:MM", 
-        end_time: "HH:MM", 
-        subscription: "", 
-        location: "青山学院大学相模原キャンパス B422 AIMコモンズ",
-        capacity: 0, 
-        question: []
-      }
-      // モジュール関連
-      function addNewModule(question_type, unique_Id, workshop_index, mode) {
-        // UUIDから要素を取得し、コンテナへ
-        const moduleContainerElem = document.getElementById(unique_Id).querySelector("#module-container");
-        const question_index = moduleContainerElem.childElementCount;
+  const newWORKSHOP = {
+    name: "新規講座", 
+    date: "yyyy/mm/dd", 
+    start_time: "HH:MM", 
+    end_time: "HH:MM", 
+    subscription: "", 
+    location: "青山学院大学相模原キャンパス B422 AIMコモンズ",
+    capacity: 0, 
+    question: []
+  }
+  // モジュール関連
+  function addNewModule(question_type, unique_Id, workshop_index, mode) {
+    // UUIDから要素を取得し、コンテナへ
+    const moduleContainerElem = document.getElementById(unique_Id).querySelector("#module-container");
+    const question_index = moduleContainerElem.childElementCount;
 
-        // 新規モジュール用
-        const new_question = {type: question_type, title: "", subscription: "", option: [], required: false};
+    // 新規モジュール用
+    const new_question = {type: question_type, title: "", subscription: "", option: [], required: false};
 
-        setModuleItem(moduleContainerElem, new_question, workshop_index, question_index, mode);
-      }
-      function deleteModule(e) {
-        // イベント引数から要素を辿ってカードを削除
-        e.target.closest(".module").remove();
-      }
+    setModuleItem(moduleContainerElem, new_question, workshop_index, question_index, mode);
+  }
+  function deleteModule(e) {
+    // イベント引数から要素を辿ってカードを削除
+    e.target.closest(".module").remove();
+  }
 
-      // オプション関連
-      function addOption(question_type, workshop_index, question_index) {
-        // オプションコンテナ
-        const optionConteinerElem = document.getElementById("Q"+workshop_index+"-"+question_index).querySelector("#option-container");
-        const option_index = optionConteinerElem.childElementCount + 1;
+  // オプション関連
+  function addOption(question_type, workshop_index, question_index) {
+    // オプションコンテナ
+    const q_id = "module-Q"+workshop_index+"-"+question_index;
+    const optionConteinerElem = document.getElementById(q_id).querySelector("#option-container");
+    const option_index = optionConteinerElem.childElementCount + 1;
 
-        // オプションをクローン
-        switch(question_type){
-          case "ラジオボタン":
-            var OptionClone = TemplateChoiceOptionSetting.content.cloneNode(true);
-            OptionClone.querySelector(".form-check-input").setAttribute("name", "Q"+workshop_index+"-"+question_index);
-            break;
-          case "チェックボックス":
-            var OptionClone = TemplateCheckboxOptionSetting.content.cloneNode(true);
-            break;
-        }
-        OptionClone.getElementById("optiontext").setAttribute("value", "選択肢" + option_index);
-        optionConteinerElem.appendChild(OptionClone);
+    // オプションをクローン
+    switch(question_type){
+      case "ラジオボタン":
+        var OptionClone = TemplateChoiceOptionSetting.content.cloneNode(true);
+        OptionClone.querySelector(".form-check-input").setAttribute("name", "Q"+workshop_index+"-"+question_index);
+        break;
+      case "チェックボックス":
+        var OptionClone = TemplateCheckboxOptionSetting.content.cloneNode(true);
+        break;
+    }
+    OptionClone.getElementById("optionText").setAttribute("value", "選択肢" + option_index);
+    optionConteinerElem.appendChild(OptionClone);
 
-        // 追加された選択肢の削除ボタンにイベントリスナーを
-        const newOptionElem = optionConteinerElem.lastElementChild;
-        newOptionElem.querySelector(".delete-option").addEventListener('click', deleteOption);
-      }
-      function deleteOption(e){
-        const optionItemElem = e.target.closest(".option").remove();
-      }
-    </script>
+    // 追加された選択肢の削除ボタンにイベントリスナーを
+    const newOptionElem = optionConteinerElem.lastElementChild;
+    newOptionElem.querySelector(".delete-option").addEventListener('click', deleteOption);
+  }
+  function deleteOption(e){
+    const optionItemElem = e.target.closest(".option").remove();
+  }
+</script>
