@@ -65,11 +65,19 @@
     <script>
       const mode = "manager";
       
+
+      // 画面上部の空白
+      const resizeObserver = new ResizeObserver(function(e){
+        var h = document.querySelector("nav").offsetHeight;
+        document.querySelector("body").setAttribute("style", "padding-top: "+h+"px");
+      })
+      resizeObserver.observe(document.querySelector("nav"));
+
+      // 画面情報の更新
       reload(0)
 
-      // 借りてきたuuid生成コード
+      // uuid生成コード
       function generateUuid() {
-        // https://github.com/GoogleChrome/chrome-platform-analytics/blob/master/src/internal/identifier.js
         // const FORMAT: string = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
         let chars = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".split("");
         for (let i = 0, len = chars.length; i < len; i++) {
