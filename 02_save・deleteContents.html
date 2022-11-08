@@ -1,0 +1,82 @@
+<script>
+  function saveContents(e){
+    // 親要素を辿ってワークショップを取得
+    const contentsElem = e.target.closest(".workshop-contents");
+
+    // 展開中のモーダルを閉じる
+    bootstrap.Modal.getInstance(contentsElem.querySelector(".modal")).hide();
+    // ローディング表示
+    document.getElementById("loading").style.display = "block";
+    
+    // コンテナ中の要素数から何番目か判定
+    const workshopContainerElem = document.getElementById("containerWorkshop");
+    const workshopElems = workshopContainerElem.getElementsByClassName("workshop-contents")
+    const workshop_index = [].slice.call(workshopElems).indexOf(contentsElem);
+
+    const workshop_id = contentsElem.getAttribute("id");
+    var WORKSHOP = {}
+
+    const moduleElems = contentsElem.querySelector("#module-container").children;
+
+    WORKSHOP["name"] = moduleElems[0].querySelector("#WorkshopName").value;
+    WORKSHOP["date"] = moduleElems[0].querySelector("#EventDate").value;
+    WORKSHOP["start_time"] = moduleElems[0].querySelector("#StartTime").value;
+    WORKSHOP["end_time"] = moduleElems[0].querySelector("#EndTime").value;
+    WORKSHOP["subscription"] = moduleElems[0].querySelector("#WorkshopSubscription").value;
+    WORKSHOP["capacity"] = moduleElems[0].querySelector("#numCapacity").value;
+    WORKSHOP["location"] = moduleElems[0].querySelector("#Location").value;
+
+    WORKSHOP["question"] = []
+    
+    for (let i=1; i < moduleElems.length; i++){
+      var MODULE = {};
+      
+      MODULE["type"] = moduleElems[i].querySelector(".card-header").textContent;
+      MODULE["title"] = moduleElems[i].querySelector("#moduleTitle").value;
+
+      switch(MODULE["type"]){
+        case "タイトルと説明":
+          MODULE["subscription"] = moduleElems[i].querySelector("#moduleSubscription").value;
+          break;
+        case "短文回答":
+        case "長文回答":
+          MODULE["required"] = moduleElems[i].querySelector("#requiredSwitch").checked;
+          break;
+        case "ラジオボタン":
+        case "チェックボックス":
+          MODULE["option"] = []
+          const optionItemElems = moduleElems[i].querySelector("#option-container").children;
+          for (let j=0; j < optionItemElems.length; j++){
+            console.log(optionItemElems[j])
+            MODULE["option"].push(optionItemElems[j].querySelector("#optionText").value);
+          }
+          MODULE["required"] = moduleElems[i].querySelector("#requiredSwitch").checked;
+          break;
+      }
+
+      WORKSHOP["question"].push(MODULE);
+    }
+    
+    // スクリプトプロパティを更新・リロード
+    google.script.run.withSuccessHandler(function(r){reload(r)}).updateProperty(WORKSHOP, workshop_id);
+  }
+
+  function deleteContents(e){
+    var result = window.confirm('このワークショップを削除して、よろしいですか？');
+    if( result ) {
+      // 親要素を辿ってワークショップを取得
+      const contentsElem = e.target.closest(".workshop-contents");
+
+      // 展開中のモーダルを閉じる
+      bootstrap.Modal.getInstance(contentsElem.querySelector(".modal")).hide();
+      // ローディング表示
+      document.getElementById("loading").style.display = "block";
+
+      // DB-IDを取得
+      const workshop_id = contentsElem.getAttribute("id");
+      
+      // スクリプトプロパティを更新・リロード
+      google.script.run.withSuccessHandler(function(r){reload(r)}).deleteProperty(workshop_id);
+    }
+  }
+</script>

@@ -1,0 +1,43 @@
+<style>
+  .inline-block {
+    display: inline-block;      /* インラインブロック要素にする */
+    width: 50%;
+  }
+
+  .left {
+    text-align: start;
+  }
+
+  .right {
+    text-align: end;
+  }
+
+  body{
+    padding-top: 60px; 
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+  @media screen and (max-width: 0px) {
+    body{ 
+      padding-top: 100px; 
+    }
+  }
+
+  .modal-body {
+    background: repeating-linear-gradient(-45deg, #ddd 0, #ddd 2px, #FFF 4px, #FFF 6px);
+  }
+  
+  #loading {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2147483647;
+      transition: all 1s;
+      background-color: rgb(91, 91, 91, .8);
+      background-size: cover;
+      display: none;
+      overscroll-behavior: none;
+  }
+</style>

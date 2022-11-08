@@ -1,0 +1,34 @@
+<script>
+  function reload(r) {
+    // ローディング表示
+    document.getElementById("loading").style.display = "block";
+    
+    // 画面をリセット
+    const workshopContainerElem = document.getElementById("containerWorkshop");
+    var clone = workshopContainerElem.cloneNode(false);
+    workshopContainerElem.parentNode.replaceChild(clone, workshopContainerElem);
+    google.script.run.withSuccessHandler(
+      function(data){
+        // ソートしてカードを実装
+        createWorkshopWithSort(data);
+        // ローディング表示解除
+        document.getElementById("loading").style.display = "none";
+      }
+    ).callDB();
+  }
+
+  function createWorkshopWithSort(workshopDB){
+    // ソート
+    // 連想配列形式のDBから、[{key: , date: , WORKSHOP: }, ...]の配列形式に
+    const workshopDB_ArrayByDate = Object.keys(workshopDB).map(k => ({key: k, date: new Date(workshopDB[k].date+" "+workshopDB[k].start_time), WORKSHOP: workshopDB[k]}));
+    // dateでソート
+    workshopDB_ArrayByDate.sort((a, b) => a.date - b.date);
+    // 連想配列形式に戻す
+    const workshopDB_sorted = Object.assign({}, ...workshopDB_ArrayByDate.map((item) => ({[item.key]: item.WORKSHOP,})));
+
+    // 実行
+    for(let key in workshopDB_sorted){
+      createWorkshop(workshopDB_sorted[key], key, mode);
+    }
+  }
+</script>

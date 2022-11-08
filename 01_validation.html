@@ -1,0 +1,65 @@
+<!-- validation -->
+<script>
+  function validation(e){
+    console.log("start validation")
+    const form = e.target.closest("form")
+
+    // ここどうしたらいいんだろー
+    console.log(form.checkValidity())
+    if (!form.checkValidity()) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    // 質問項目リスト
+    const question_modules = form.querySelector('.modal-body').children;
+
+    for (let i=1; i<question_modules.length; i++){
+      var question_i = question_modules[i];
+      var question_type = question_i.querySelector('.card-header').textContent
+
+      // 必須項目指定してあれば
+      if (question_i.querySelector('#require') != null){
+        // 質問形式に合わせてvalidation
+        switch(question_type){
+          case "ラジオボタン":
+          case "チェックボックス":
+            var options = question_i.querySelector('#option-container').getElementsByClassName("option");
+            var checkedCount = 0;
+            Array.prototype.slice.call(options).forEach(
+              function(option){
+                console.log(option);
+                var option_input = option.querySelector("input");
+                if (option_input.checked){
+                  checkedCount ++;
+                }
+              }
+            )
+            console.log(checkedCount)
+            if (checkedCount == 0){
+              Array.prototype.slice.call(options).forEach(
+                function(option){
+                  question_i.classList.remove('was-validated');
+                  option.classList.add("is-invalid");
+                  option.querySelector("input").classList.add("is-invalid");
+                }
+              );
+            } else {
+              Array.prototype.slice.call(options).forEach(
+                function(option){
+                  if (option.classList.remove("is-invalid")){
+                    option.querySelector("input").classList.remove("is-invalid");
+                  }
+                  question_i.classList.add('was-validated');
+                }
+              );
+            }
+            break;
+
+          default:
+            question_i.classList.add('was-validated')
+        }
+      }
+    }
+  }
+</script>

@@ -1,0 +1,385 @@
+<script>
+  // ワークショップコンテンツテンプレート
+  const TemplateWorkshop = document.getElementById("templateWorkshop");
+  
+  // トップモジュール系テンプレート
+  const TemplateInformation = document.getElementById("moduleInformationItem");
+  const TemplateSettingItem = document.getElementById("moduleSettingItem");
+
+  // footer系テンプレート
+  var TemplateFooter = document.getElementById("module-footer");
+  var TemplateRequiredSwitch = document.getElementById("requiredSwitchTemplate");
+  var TemplateDeleteBtn = document.getElementById("deleteBtnTemplate");
+
+  // module系テンプレート
+  const ModuleTitle = document.getElementById("moduleTitleItem");
+  const ModuleTextItem = document.getElementById("moduleTextItem");
+  const ModuleParagraphTextItem = document.getElementById("moduleParagraphTextItem");
+  const ModuleChoiceItem = document.getElementById("moduleChoiceItem");
+  const ModuleCheckboxItem = document.getElementById("moduleCheckboxItem");
+
+  // 選択肢option系テンプレート
+  const TemplateChoiceOption = document.getElementById("templateChoiceOption");
+  const TemplateChoiceOptionSetting = document.getElementById("templateChoiceOptionSetting");
+  const TemplateCheckboxOption = document.getElementById("templateCheckboxOption");
+  const TemplateCheckboxOptionSetting = document.getElementById("templateCheckboxOptionSetting");
+
+  // ボタン系テンプレート
+  const TemplateSaveDeleteBtn = document.getElementById("SaveDeleteBtnTemplate");
+  const TemplateReserveBtn = document.getElementById("ReserveBtnTemplate");
+
+  function createWorkshop(WORKSHOP, unique_Id, mode){
+    // カードのインデックスを取得（modalDivのid用）
+    const workshop_index = document.getElementById("containerWorkshop").childElementCount;
+
+    // ワークショップのテンプレートからクローン
+    var WorkshopContents = TemplateWorkshop.content.cloneNode(true);
+
+    // cloneにUUIDとカードインデックスをid付与
+    WorkshopContents.querySelector(".workshop-contents").setAttribute("id", unique_Id);
+    WorkshopContents.getElementById("openModalBtn").setAttribute("data-bs-target", "#workshop-no"+workshop_index)
+    WorkshopContents.getElementById("modalDiv").id = "workshop-no"+workshop_index;
+
+    // カード中ボタンのマークを変更
+    changeBtnMark(WorkshopContents, mode);
+
+    // カードの情報を編集
+    WorkshopContents.getElementById("card-title").textContent = WORKSHOP["name"];
+    WorkshopContents.getElementById("scheduled").textContent = WORKSHOP["date"]+" "+WORKSHOP["start_time"]+" ~ "+WORKSHOP["end_time"];
+    WorkshopContents.getElementById("card-subs").textContent = WORKSHOP["subscription"];
+
+    // modalのヘッダーにワークショップ名を表示
+    WorkshopContents.getElementById("workshopLabel").textContent = WORKSHOP["name"];
+
+    // modalのフッターにボタンを追加
+    switch(mode){
+      case "user":
+        var BtnGroupClone = TemplateReserveBtn.content.cloneNode(true);
+        break;
+      case "manager":
+        // SAVE・DELETE・ADDボタン
+        var BtnGroupClone = TemplateSaveDeleteBtn.content.cloneNode(true);
+        break;
+    }
+    WorkshopContents.querySelector(".modal-footer").appendChild(BtnGroupClone);
+
+    // クローンをコンテナに追加
+    document.getElementById("containerWorkshop").appendChild(WorkshopContents);
+
+    // イベントハンドラをつけるために、UUIDから再取得
+    WorkshopContents = document.getElementById(unique_Id);
+    // イベントハンドラを付与
+    switch(mode){
+      case "user":
+        // validation
+        const Submit_btn = WorkshopContents.querySelector(".submit-contents-btn");
+        Submit_btn.addEventListener('click', validation);
+        break;
+
+      case "manager":
+        // フッターボタンの設定
+        // Addボタングループの各ボタンにモジュール追加機能を付与
+        const Add_btn = WorkshopContents.getElementsByClassName("add-new-module");
+        for (let i=0; i < Add_btn.length; i++){
+          Add_btn[i].setAttribute("onclick", "addNewModule('"+Add_btn[i].textContent+"','"+unique_Id+"','"+workshop_index+"','"+mode+"')");
+        }
+        // SAVE・DELETEボタンに機能付与
+        const Save_btn = WorkshopContents.querySelector(".save-contents-btn");
+        Save_btn.addEventListener('click', saveContents);
+        const Delete_btn = WorkshopContents.querySelector(".delete-contents-btn");
+        Delete_btn.addEventListener('click', deleteContents);
+        break;
+    }
+
+    // modal内のコンテナ要素
+    const moduleContainerElem = WorkshopContents.querySelector("#module-container");
+    
+    // modalに初期モジュールをセット
+    switch(mode){
+      case "user":
+        setInformationItem(moduleContainerElem, WORKSHOP)
+        break;
+      case "manager":
+        setSettingItem(moduleContainerElem, WORKSHOP);
+        break;
+    }
+
+    // 質問項目リスト
+    const question_list = WORKSHOP["question"];
+    // それぞれの項目を順番に実装
+    for (let i=0; i < question_list.length; i++){
+      // i番目の質問項目
+      var question_i = question_list[i];
+
+      // 質問モジュールを追加
+      setModuleItem(moduleContainerElem, question_i, workshop_index, i, mode);
+    }
+  }
+
+  function changeBtnMark(clone, mode){
+    switch(mode){
+      case "user":
+        clone.getElementById("openModalBtn").innerHTML = "詳細　<i class=\"bi bi-calendar-check\"></i>";
+        break;
+      case "manager":
+        clone.getElementById("openModalBtn").innerHTML = "<i class=\"bi bi-tools\"></i>";
+        break;
+    }
+  }
+  
+  function setSettingItem(containerElem, WORKSHOP){
+    // 必須情報設定モジュールをクローン
+    var SettingModule = TemplateSettingItem.content.cloneNode(true);
+
+    // モーダル内の必須情報を設定
+    SettingModule.getElementById("WorkshopName").value = WORKSHOP["name"];
+    SettingModule.getElementById("EventDate").value = WORKSHOP["date"];
+    SettingModule.getElementById("StartTime").value = WORKSHOP["start_time"];
+    SettingModule.getElementById("EndTime").value = WORKSHOP["end_time"];
+    SettingModule.getElementById("WorkshopSubscription").value = WORKSHOP["subscription"];
+    SettingModule.getElementById("Location").value = WORKSHOP["location"];
+    SettingModule.getElementById("numCapacity").value = WORKSHOP["capacity"];
+
+    containerElem.appendChild(SettingModule);
+  }
+
+  function setInformationItem(containerElem, WORKSHOP){
+    // 必須情報モジュールをクローン
+    var InformationModule = TemplateInformation.content.cloneNode(true);
+
+    // モーダル内の必須情報を設定
+    InformationModule.getElementById("WorkshopName").textContent = WORKSHOP["name"];
+    InformationModule.getElementById("EventDate").textContent = WORKSHOP["date"]+" "+WORKSHOP["start_time"]+" ~ "+WORKSHOP["end_time"];
+    InformationModule.getElementById("WorkshopSubscription").textContent = WORKSHOP["subscription"];
+    InformationModule.getElementById("Location").textContent = WORKSHOP["location"];
+    InformationModule.getElementById("numCapacity").textContent = String(WORKSHOP["capacity"]) + "名";
+
+    containerElem.appendChild(InformationModule);
+  }
+  
+  function setModuleItem(containerElem, question, workshop_index, question_index, mode){
+    // 対応するModuleテンプレートをクローンして、必要情報の変更
+    switch(question["type"]){
+      case "タイトルと説明":
+        var moduleClone = ModuleTitle.content.cloneNode(true);
+
+        switch(mode){
+          case "user":
+            // moduleのヘッダー・フッターを解除
+            moduleClone.querySelector(".card-header").style.display ="none";
+            moduleClone.querySelector(".card-footer").style.display ="none";
+            // 説明文をセット
+            moduleClone.querySelector("#questionSubscription").innerHTML = "<p>" + question["subscription"] + "</p>";
+            break;
+          case "manager":
+            moduleClone.querySelector("#moduleSubscription").value = question["subscription"];
+            // フッター追加
+            setModuleFooter(moduleClone, false, true);
+            break;
+        }
+        break;
+
+      case "短文回答":
+        var moduleClone = ModuleTextItem.content.cloneNode(true);
+
+        switch(mode){
+          case "user":
+            // moduleのヘッダー・フッターを解除
+            moduleClone.querySelector(".card-header").style.display ="none";
+            moduleClone.querySelector(".card-footer").style.display ="none";
+            // 入力欄
+            moduleClone.querySelector(".questionInput").setAttribute("id", "Q"+workshop_index+"-"+question_index);
+            moduleClone.querySelector(".questionInput").setAttribute("name", "Q"+workshop_index+"-"+question_index);
+            moduleClone.querySelector(".questionInput").setAttribute("required", question["required"]);
+            moduleClone.querySelector(".questionInput").disabled = false;
+            break;
+          case "manager":
+            // フッター追加
+            setModuleFooter(moduleClone, true, true, question["required"]);
+            break;
+        }
+        break;
+      case "長文回答":
+        var moduleClone = ModuleParagraphTextItem.content.cloneNode(true);
+
+        switch(mode){
+          case "user":
+            // moduleのヘッダー・フッターを解除
+            moduleClone.querySelector(".card-header").style.display ="none";
+            moduleClone.querySelector(".card-footer").style.display ="none";
+            // 入力欄
+            moduleClone.querySelector(".questionInput").setAttribute("id", "Q"+workshop_index+"-"+question_index);
+            moduleClone.querySelector(".questionInput").setAttribute("name", "Q"+workshop_index+"-"+question_index);
+            moduleClone.querySelector(".questionInput").setAttribute("required", question["required"]);
+            moduleClone.querySelector(".questionInput").disabled = false;
+            break;
+          case "manager":
+            // フッター追加
+            setModuleFooter(moduleClone, true, true, question["required"]);
+            break;
+        }
+        break;
+
+      case "ラジオボタン":
+        var moduleClone = ModuleChoiceItem.content.cloneNode(true);
+
+        //　選択肢を取得
+        var option = question["option"]
+        // 選択肢の表示先
+        var optionConteinerElem = moduleClone.querySelector("#option-container");
+
+        switch(mode){
+          case "user":
+            // moduleのヘッダー・フッターを解除
+            moduleClone.querySelector(".card-header").style.display ="none";
+            moduleClone.querySelector(".card-footer").style.display ="none";
+            // 選択肢を追加
+            for (let i=0; i < option.length; i++){
+              var OptionClone = TemplateChoiceOption.content.cloneNode(true);
+              OptionClone.querySelector(".form-check-input").setAttribute("name", "Q"+workshop_index+"-"+question_index);
+              OptionClone.querySelector(".form-check-input").setAttribute("id", "Q"+workshop_index+"-"+question_index+"-"+i);
+              OptionClone.querySelector(".form-check-input").setAttribute("required", question["required"]);
+              OptionClone.querySelector(".form-check-label").setAttribute("for", "Q"+workshop_index+"-"+question_index+"-"+i);
+              OptionClone.querySelector(".form-check-label").textContent = option[i];
+              optionConteinerElem.appendChild(OptionClone);
+            }
+            // validation text
+            var validationDev = document.createElement('dev');
+            validationDev.setAttribute("class", "invalid-feedback");
+            validationDev.textContent = "必須回答項目です。どれか1つ選択してください。";
+            optionConteinerElem.appendChild(validationDev);
+            // 選択肢追加ボタンを削除
+            moduleClone.querySelector(".add-option").remove();
+            break;
+          case "manager":
+            // 初期選択肢を追加
+            for (let i=0; i < option.length; i++){
+              var OptionClone = TemplateChoiceOptionSetting.content.cloneNode(true);
+              OptionClone.querySelector(".form-check-input").setAttribute("name", "Q"+workshop_index+"-"+question_index);
+              OptionClone.querySelector("#optionText").setAttribute("value", option[i]);
+              optionConteinerElem.appendChild(OptionClone);
+            }
+            // フッター追加
+            setModuleFooter(moduleClone, true, true, question["required"]);
+            break;
+        }
+        break;
+
+      case "チェックボックス":
+        var moduleClone = ModuleCheckboxItem.content.cloneNode(true);
+
+        //　選択肢を取得
+        var option = question["option"]
+        // 選択肢の表示先
+        var optionConteinerElem = moduleClone.querySelector("#option-container");
+
+        switch(mode){
+          case "user":
+            // moduleのヘッダー・フッターを解除
+            moduleClone.querySelector(".card-header").style.display ="none";
+            moduleClone.querySelector(".card-footer").style.display ="none";
+            // 選択肢を追加
+            for (let i=0; i < option.length; i++){
+              var OptionClone = TemplateCheckboxOption.content.cloneNode(true);
+              OptionClone.querySelector(".form-check-input").setAttribute("id", "Q"+workshop_index+"-"+question_index+"-"+i);
+              OptionClone.querySelector(".form-check-label").setAttribute("for", "Q"+workshop_index+"-"+question_index+"-"+i)
+              OptionClone.querySelector(".form-check-label").textContent = option[i];
+              optionConteinerElem.appendChild(OptionClone);
+            }
+            // validation text
+            var validationDev = document.createElement('dev');
+            validationDev.setAttribute("class", "invalid-feedback");
+            validationDev.textContent = "必須回答項目です。1つ以上選択してください。";
+            optionConteinerElem.appendChild(validationDev);
+            // 選択肢追加ボタンを削除
+            moduleClone.querySelector(".add-option").remove();
+            break;
+          case "manager":
+            // 初期選択肢を追加
+            for (let i=0; i < option.length; i++){
+              var OptionClone = TemplateCheckboxOptionSetting.content.cloneNode(true);
+              OptionClone.querySelector("#optionText").setAttribute("value", option[i]);
+              optionConteinerElem.appendChild(OptionClone);
+            }
+            // フッター追加
+            setModuleFooter(moduleClone, true, true, question["required"]);
+            break;
+        }
+        break;
+    }
+
+    // 質問タイトルはモジュール共通
+    switch(mode){
+      case "user":
+        // 質問文
+        var question_title = document.createElement('label');
+        question_title.setAttribute("for", "Q"+workshop_index+"-"+question_index);
+        question_title.textContent = question["title"];
+        // 必須項目表示
+        if (question["required"]){
+          var require_text = document.createElement('p');
+          require_text.id = 'require';
+          require_text.style = 'color: red;';
+          require_text.textContent = "＊必須";
+          question_title.appendChild(require_text)
+        }
+        moduleClone.querySelector("#questionTitle").replaceWith(question_title);
+        break;
+      case "manager":
+        moduleClone.querySelector("#moduleTitle").value = question["title"];
+        break;
+    }
+    moduleClone.querySelector(".module").setAttribute("id", "module-Q"+workshop_index+"-"+question_index);
+
+    // 追加して、取得し直し
+    containerElem.appendChild(moduleClone);
+    ModuleContents = containerElem.querySelector("#module-Q"+workshop_index+"-"+question_index);
+    
+    // ボタンに機能付与
+    switch(mode){
+      case "user":
+        break;
+      case "manager":
+        // モジュールボタンの設定
+        // trashボタンに、モジュール削除機能を付与
+        const trash_btn = ModuleContents.querySelector(".delete-module");
+        trash_btn.addEventListener('click', deleteModule);
+        
+        // ラジオボタン・チェックボックスのオプション
+        // 追加ボタン
+        switch(question["type"]){
+          case "ラジオボタン":
+          case "チェックボックス":
+            const add_option_btn = ModuleContents.querySelector(".add-option");
+            add_option_btn.setAttribute("onclick", "addOption('"+ question["type"] +"', '"+ workshop_index +"', '"+ question_index +"')")
+            
+            // 削除ボタン
+            const delete_option_btn = ModuleContents.getElementsByClassName("delete-option");
+            for (let i=0; i < delete_option_btn.length; i++){
+              delete_option_btn[i].addEventListener('click', deleteOption);
+            }
+            break;
+        }
+        break;
+    }
+  }
+  
+  function setModuleFooter(clone, isRequired, isDelete, required_value){
+    // Footerクローン
+    const FooterClone = TemplateFooter.content.cloneNode(true);
+    const RequiredSwitchClone = TemplateRequiredSwitch.content.cloneNode(true);
+    const DeleteBtnClone = TemplateDeleteBtn.content.cloneNode(true);
+
+    // 必須回答スイッチを追加・初期値をセット
+    if (isRequired){
+      FooterClone.querySelector(".left").appendChild(RequiredSwitchClone);
+      FooterClone.querySelector("#requiredSwitch").checked = required_value;
+    }
+    // モジュール削除ボタンを追加
+    if (isDelete){
+      FooterClone.querySelector(".right").appendChild(DeleteBtnClone);
+    }
+
+    clone.querySelector(".card-footer").appendChild(FooterClone);
+  }
+</script>

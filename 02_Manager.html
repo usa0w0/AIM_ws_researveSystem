@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+  </head>
+  
+  <!-- ナビゲータ -->
+  <nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand">
+        <i class="bi bi-easel2-fill"></i>
+        ワークショップ予約サイト
+      </a>
+      <span class="navbar-text ml-auto">
+        <i class="bi bi-person-check-fill"></i>
+        <?=loginManagerName ?>
+      </span>
+    </div>
+  </nav>
+
+  <!-- ローディング画面 -->
+  <div id="loading">
+    <div class="d-flex justify-content-center" style="height: 100%; align-items: center; color: #FFF; font-weight: bold;">
+      <div class="spinner-border" style="width: 250px; height: 250px;" role="status"></div>
+      <div style="text-align: center; font-size:2rem;"></div>
+    </div>
+  </div>
+
+  <body>
+    <div class="row" id="containerWorkshop">
+      <!-- 講座設定カードの表示エリア -->
+    </div>
+
+    <!-- 講座カードのテンプレート -->
+    <?!= HtmlService.createHtmlOutputFromFile('00_Template').getContent(); ?>
+
+    <!-- 新規ワークショップの追加ボタン -->
+    <div class="btn-group m-2" role="group" aria-label="Basic mixed styles example">
+      <button type="button" class="btn btn-outline-primary btn-lg" onclick="createWorkshop(newWORKSHOP, generateUuid(), mode)">+</button>
+      <button type="button" class="btn btn-outline-success btn-lg" onclick="reload()"><i class="bi bi-arrow-clockwise"></i></button>
+    </div>
+
+    <div class="dropdown m-2">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        開発用モード切り替え
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><a class="dropdown-item" href="https://script.google.com/a/macros/ima.aim.aoyama.ac.jp/s/AKfycbxwsUyBzyt-0056vDp9fXXB7_EXeaS-vcQcvXJaHHU/dev?p=user">Dev - User</a></li>
+        <li><a class="dropdown-item" href="https://script.google.com/a/macros/ima.aim.aoyama.ac.jp/s/AKfycbxwsUyBzyt-0056vDp9fXXB7_EXeaS-vcQcvXJaHHU/dev?p=manager">Dev - Manager</a></li>
+        <li><a class="dropdown-item" href="https://script.google.com/a/macros/ima.aim.aoyama.ac.jp/s/AKfycbxwsUyBzyt-0056vDp9fXXB7_EXeaS-vcQcvXJaHHU/exec?p=user">Exe - User</a></li>
+        <li><a class="dropdown-item" href="https://script.google.com/a/macros/ima.aim.aoyama.ac.jp/s/AKfycbxwsUyBzyt-0056vDp9fXXB7_EXeaS-vcQcvXJaHHU/exec?p=manager">Exe - Manager</a></li>
+      </ul>
+    </div>
+
+    <?!= HtmlService.createHtmlOutputFromFile('00_createWorkshop').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('00_reload').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('02_add・delete-Module・Option').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('02_save・deleteContents').getContent(); ?>
+
+    <script>
+      const mode = "manager";
+      
+      reload(0)
+
+      // 借りてきたuuid生成コード
+      function generateUuid() {
+        // https://github.com/GoogleChrome/chrome-platform-analytics/blob/master/src/internal/identifier.js
+        // const FORMAT: string = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+        let chars = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".split("");
+        for (let i = 0, len = chars.length; i < len; i++) {
+            switch (chars[i]) {
+                case "x":
+                    chars[i] = Math.floor(Math.random() * 16).toString(16);
+                    break;
+                case "y":
+                    chars[i] = (Math.floor(Math.random() * 4) + 8).toString(16);
+                    break;
+            }
+        }
+        return chars.join("");
+      }
+    </script>
+
+  </body>
+</html>

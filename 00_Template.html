@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<!-- 講座設定カードのテンプレート -->
+<template id="templateWorkshop">
+  <div class="workshop-contents col-lg-4">
+    <!-- Button(card) trigger modal -->
+    <div class="card m-2">
+      <h7 class="card-header">Workshop</h7>
+      <div class="card-body">
+        <h5 class="card-title" id="card-title"></h5>
+        <h6 class="card-subtitle mb-2 text-muted" id="scheduled"></h6>
+        <p class="card-text" id="card-subs"></p>
+        <button type="button" class="btn btn-primary btn-lg" id="openModalBtn" data-bs-toggle="modal" data-bs-target="#modalDiv">
+          <i class="bi bi-tools"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalDiv" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="padding: 0px;">
+      <div class="modal-dialog modal-xl modal-fullscreen-lg-down modal-dialog-centered modal-dialog-scrollable">
+        <form class="modal-content needs-validation">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="workshopLabel"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body" id="module-container">
+            <!-- 追加設定モジュールの表示エリア -->
+          </div>
+
+          <div class="modal-footer"></div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- 設定ボタングループ -->
+<template id="SaveDeleteBtnTemplate">
+  <button type="button" class="btn btn-outline-danger delete-contents-btn">DELETE</button>
+
+  <div class="dropup">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="addBtnMenu" data-bs-toggle="dropdown" aria-expanded="false">Add Item</button>
+    <ul class="dropdown-menu" aria-labelledby="addBtnMenu">
+      <li><button class="dropdown-item add-new-module" type="button">タイトルと説明</button></li>
+      <li><button class="dropdown-item add-new-module" type="button">短文回答</button></li>
+      <li><button class="dropdown-item add-new-module" type="button">長文回答</button></li>
+      <li><button class="dropdown-item add-new-module" type="button">ラジオボタン</button></li>
+      <li><button class="dropdown-item add-new-module" type="button">チェックボックス</button></li>
+    </ul>
+  </div>
+
+  <button type="button" class="btn btn-primary save-contents-btn">SAVE</button>
+</template>
+<!-- 予約ボタン -->
+<template id="ReserveBtnTemplate">
+  <button type="button" class="btn btn-primary submit-contents-btn">予約　<i class="bi bi-send"></i></button>
+</template>
+
+<!-- 以下、講座設定モジュールのテンプレート -->
+<!-- フッター -->
+<template id="module-footer">
+  <div class="inline-block left">
+  </div><div class="inline-block right">
+  </div>
+</template>
+<!-- 必須回答 -->
+<template id="requiredSwitchTemplate">
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="requiredSwitch">
+    <label class="form-check-label" for="requiredSwitch">必須回答</label>
+  </div>
+</template>
+<!-- Deleteボタン -->
+<template id="deleteBtnTemplate">
+  <button type="button" class="btn btn-outline-secondary delete-module" >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M6 1.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v1H6v-1Zm5 0v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5ZM4.5 5.029a.5.5 0 1 1 .998-.06l.5 8.5a.5.5 0 0 1-.998.06l-.5-8.5Zm6.53-.528a.5.5 0 0 1 .47.528l-.5 8.5a.5.5 0 1 1-.998-.058l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+    </svg>
+  </button>
+</template>
+
+<!-- 必須情報設定モジュール -->
+<template id="moduleSettingItem">
+  <div class="module card mb-3">
+    <div class="card-header">ワークショップ情報</div>
+
+    <div class="card-body">
+      <div class="mb-3">
+        <label for="WorkshopName" class="form-label">タイトル</label>
+        <input type="text" class="form-control" id="WorkshopName">
+      </div>
+
+      <label for="EventDate" class="form-label">開催日</label>
+      <div class="mb-3 row">
+        <div class="col-auto"><input type="date" class="form-control" id="EventDate"></div>
+        <div class="col-auto">
+          <div class="row">
+            <div class="col-sm-auto"><input type="time" class="form-control" id="StartTime"></div>
+            <div class="col-sm-auto">〜</div>
+            <div class="col-sm-auto"><input type="time" class="form-control" id="EndTime"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="WorkshopSubscription" class="form-label">概要</label>
+        <textarea class="form-control" id="WorkshopSubscription" rows="3"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="Location" class="form-label">場所</label>
+        <input type="text" class="form-control" id="Location">
+      </div>
+
+      <div class="mb-3 row">
+        <label for="numCapacity" class="col-sm-1 col-form-label">定員</label>
+        <div class="col-sm-auto">
+          <select class="form-select" aria-label="Default select example" id="numCapacity">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- 講座情報表示モジュール（ユーザー） -->
+<template id="moduleInformationItem">
+  <div class="module card mb-3">
+    <div class="card-body">
+      <div class="mb-3">
+        <h2 id="WorkshopName"></h2>
+      </div>
+
+      <div class="mb-3">
+        <p id="WorkshopSubscription"></p>
+      </div>
+      
+      <div class="mb-3">
+        <h6>【開催日】</h6>
+        <p id="EventDate" style="text-indent: 1rem;"></p>
+      </div>
+
+      <div class="mb-3">
+        <h6>【場所】</h6>
+        <p id="Location" style="text-indent: 1rem;"></p>
+      </div>
+
+      <div class="mb-3 row">
+        <h6>【定員】</h6>
+        <p id="numCapacity" style="text-indent: 1rem;"></p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- タイトル -->
+<template id="moduleTitleItem">
+  <div class="module card mt-5 mb-3">
+    <h7 class="card-header">タイトルと説明</h7>
+    
+    <div class="card-body">
+      <div class="mb-3" id="questionTitle">
+        <label class="form-label">タイトル</label>
+        <input type="text" class="form-control" id="moduleTitle">
+      </div>
+
+      <div class="mb-3" id="questionSubscription">
+        <label class="form-label">説明</label>
+        <textarea class="form-control" id="moduleSubscription" rows="3"></textarea>
+      </div> 
+    </div>
+    
+    <div class="card-footer"></div>
+  </div>
+</template>
+
+<!-- 短文回答 -->
+<template id="moduleTextItem">
+  <div class="module card mb-3">
+    <h7 class="card-header">短文回答</h7>
+
+    <div class="card-body">
+      <div class="mb-3" id="questionTitle">
+        <label class="form-label">タイトル</label>
+        <input type="text" class="form-control" id="moduleTitle">
+      </div>
+
+      <input id="user_input" type="text" class="form-control questionInput mb-3" disabled placeholder="記述式テキスト">
+      <div class="invalid-feedback">
+        必須回答項目です。
+      </div>
+    </div>
+    
+    <div class="card-footer"></div>
+  </div>
+</template>
+
+<!-- 長文回答 -->
+<template id="moduleParagraphTextItem">
+  <div class="module card mb-3">
+    <h7 class="card-header">長文回答</h7>
+    
+    <div class="card-body">
+      <div class="mb-3" id="questionTitle">
+        <label class="form-label">タイトル</label>
+        <input type="text" class="form-control" id="moduleTitle">
+      </div>
+
+      <textarea id="user_input" class="form-control questionInput mb-3" disabled placeholder="記述式テキスト" rows="5"></textarea>
+      <div class="invalid-feedback">
+        必須回答項目です。
+      </div>
+    </div>
+      
+    <div class="card-footer"></div>
+  </div>
+</template>
+
+<!-- ラジオボタン -->
+<template id="moduleChoiceItem">
+  <div class="module card mb-3">
+    <h7 class="card-header">ラジオボタン</h7>
+
+    <div class="card-body">
+      <div class="mb-3" id="questionTitle">
+        <label class="form-label">タイトル</label>
+        <input type="text" class="form-control" id="moduleTitle">
+      </div>
+
+      <div class="mb-3" id="option-container"></div>
+      
+      <button type="button" class="btn btn-secondary btn-sm add-option">選択肢を追加</button>
+    </div>
+    
+    <div class="card-footer"></div>
+  </div>
+</template>
+
+<!-- ラジオオプション -->
+<template id="templateChoiceOption">
+  <div class="form-check option">
+    <input class="form-check-input questionInput" type="radio" id="">
+    <label class="form-check-label"></label>
+  </div>
+</template>
+<template id="templateChoiceOptionSetting">
+  <div class="form-check option">
+    <input class="form-check-input" type="radio">
+    <label class="form-check-label row">
+      <div class="col-auto">
+        <input class="form-control" id="optionText" type="text" value="">
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-secondary delete-option">×</button>
+      </div>
+    </label>
+  </div>
+</template>
+
+<!-- チェックボックス -->
+<template id="moduleCheckboxItem">
+  <div class="module card mb-3">
+    <h7 class="card-header">チェックボックス</h7>
+
+    <div class="card-body">
+      <div class="mb-3" id="questionTitle">
+        <label class="form-label">タイトル</label>
+        <input type="text" class="form-control" id="moduleTitle">
+      </div>
+
+      <div class="mb-3" id="option-container"></div>
+      
+      <button type="button" class="btn btn-secondary btn-sm add-option">選択肢を追加</button>
+    </div>
+    
+    <div class="card-footer"></div>
+  </div>
+</template>
+
+<!-- チェックボックスオプション -->
+<template id="templateCheckboxOption">
+  <div class="form-check option">
+    <input class="form-check-input questionInput" type="checkbox" id="">
+    <label class="form-check-label"></label>
+  </div>
+</template>
+<template id="templateCheckboxOptionSetting">
+  <div class="form-check option">
+    <input class="form-check-input option-label" type="checkbox">
+    <label class="form-check-label row" id="option-label">
+      <div class="col-auto">
+        <input class="form-control" id="optionText" type="text" value="">
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-secondary delete-option">×</button>
+      </div>
+    </label>
+  </div>
+</template>
