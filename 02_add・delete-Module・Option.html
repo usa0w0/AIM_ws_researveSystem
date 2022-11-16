@@ -10,7 +10,7 @@
     question: []
   }
   // モジュール関連
-  function addNewModule(question_type, unique_Id, workshop_index, mode) {
+  function addNewModule(question_type, unique_Id, workshop_index) {
     // UUIDから要素を取得し、コンテナへ
     const moduleContainerElem = document.getElementById(unique_Id).querySelector("#module-container");
     const question_index = moduleContainerElem.childElementCount;
@@ -18,7 +18,7 @@
     // 新規モジュール用
     const new_question = {type: question_type, title: "", subscription: "", option: [], required: false};
 
-    setModuleItem(moduleContainerElem, new_question, workshop_index, question_index, mode);
+    setModuleItem(moduleContainerElem, new_question, workshop_index, question_index, true);
   }
   function deleteModule(e) {
     // イベント引数から要素を辿ってカードを削除
