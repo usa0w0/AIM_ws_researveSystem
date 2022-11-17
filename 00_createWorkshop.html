@@ -28,7 +28,7 @@
   const TemplateSaveDeleteBtn = document.getElementById("SaveDeleteBtnTemplate");
   const TemplateReserveBtn = document.getElementById("ReserveBtnTemplate");
 
-  function createWorkshop(WORKSHOP, unique_Id, is_new){
+  function createWorkshop(WORKSHOP, unique_Id, isNew){
     // カードのインデックスを取得（modalDivのid用）
     const workshop_index = document.getElementById("containerWorkshop").childElementCount;
 
@@ -100,7 +100,7 @@
         setInformationItem(moduleContainerElem, WORKSHOP)
         break;
       case "manager":
-        setSettingItem(moduleContainerElem, WORKSHOP, is_new);
+        setSettingItem(moduleContainerElem, WORKSHOP, isNew);
         break;
     }
 
@@ -112,7 +112,7 @@
       var question_i = question_list[i];
 
       // 質問モジュールを追加
-      setModuleItem(moduleContainerElem, question_i, workshop_index, i, is_new);
+      setModuleItem(moduleContainerElem, question_i, workshop_index, i, isNew);
     }
   }
 
@@ -127,7 +127,7 @@
     }
   }
   
-  function setSettingItem(containerElem, WORKSHOP, is_new){
+  function setSettingItem(containerElem, WORKSHOP, isNew){
     // 必須情報設定モジュールをクローン
     var SettingModule = TemplateSettingItem.content.cloneNode(true);
 
@@ -141,7 +141,7 @@
     SettingModule.getElementById("numCapacity").value = WORKSHOP["capacity"];
 
     // 既存の講座からは変更不可に
-    if (!is_new){
+    if (!isNew){
       SettingModule.getElementById("WorkshopName").disabled = true;
       SettingModule.getElementById("EventDate").disabled = true;
       SettingModule.getElementById("StartTime").disabled = true;
@@ -166,7 +166,7 @@
     containerElem.appendChild(InformationModule);
   }
   
-  function setModuleItem(containerElem, question, workshop_index, question_index, is_new){
+  function setModuleItem(containerElem, question, workshop_index, question_index, isNew){
     // 対応するModuleテンプレートをクローンして、必要情報の変更
     switch(question["type"]){
       case "タイトルと説明":
@@ -182,11 +182,11 @@
             break;
           case "manager":
             moduleClone.querySelector("#moduleSubscription").value = question["subscription"];
-            if (!is_new){
+            if (!isNew){
               moduleClone.querySelector("#moduleSubscription").disabled = true;
             }
             // フッター追加
-            setModuleFooter(moduleClone, false, true);
+            setModuleFooter(moduleClone, false, isNew);
             break;
         }
         break;
@@ -207,7 +207,7 @@
             break;
           case "manager":
             // フッター追加
-            setModuleFooter(moduleClone, true, true, question["required"]);
+            setModuleFooter(moduleClone, true, isNew, question["required"]);
             break;
         }
         break;
@@ -227,7 +227,7 @@
             break;
           case "manager":
             // フッター追加
-            setModuleFooter(moduleClone, true, true, question["required"]);
+            setModuleFooter(moduleClone, true, isNew, question["required"]);
             break;
         }
         break;
@@ -272,7 +272,7 @@
               optionConteinerElem.appendChild(OptionClone);
             }
             // フッター追加
-            setModuleFooter(moduleClone, true, true, question["required"]);
+            setModuleFooter(moduleClone, true, isNew, question["required"]);
             break;
         }
         break;
@@ -314,7 +314,7 @@
               optionConteinerElem.appendChild(OptionClone);
             }
             // フッター追加
-            setModuleFooter(moduleClone, true, true, question["required"]);
+            setModuleFooter(moduleClone, true, isNew, question["required"]);
             break;
         }
         break;
@@ -339,7 +339,7 @@
         break;
       case "manager":
         moduleClone.querySelector("#moduleTitle").value = question["title"];
-        if (!is_new){
+        if (!isNew){
           moduleClone.querySelector("#moduleTitle").disabled = true;
         }
         break;
@@ -355,8 +355,10 @@
       case "manager":
         // モジュールボタンの設定
         // trashボタンに、モジュール削除機能を付与
-        const trash_btn = ModuleContents.querySelector(".delete-module");
-        trash_btn.addEventListener('click', deleteModule);
+        if (isNew){
+          const trash_btn = ModuleContents.querySelector(".delete-module");
+          trash_btn.addEventListener('click', deleteModule);
+        }
         
         // ラジオボタン・チェックボックスのオプション
         // 追加ボタン
