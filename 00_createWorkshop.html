@@ -28,7 +28,7 @@
   const TemplateSaveDeleteBtn = document.getElementById("SaveDeleteBtnTemplate");
   const TemplateReserveBtn = document.getElementById("ReserveBtnTemplate");
 
-  function createWorkshop(WORKSHOP, unique_Id, mode){
+  function createWorkshop(WORKSHOP, unique_Id, is_new){
     // カードのインデックスを取得（modalDivのid用）
     const workshop_index = document.getElementById("containerWorkshop").childElementCount;
 
@@ -41,7 +41,7 @@
     WorkshopContents.getElementById("modalDiv").id = "workshop-no"+workshop_index;
 
     // カード中ボタンのマークを変更
-    changeBtnMark(WorkshopContents, mode);
+    changeBtnMark(WorkshopContents);
 
     // カードの情報を編集
     WorkshopContents.getElementById("card-title").textContent = WORKSHOP["name"];
@@ -81,7 +81,7 @@
         // Addボタングループの各ボタンにモジュール追加機能を付与
         const Add_btn = WorkshopContents.getElementsByClassName("add-new-module");
         for (let i=0; i < Add_btn.length; i++){
-          Add_btn[i].setAttribute("onclick", "addNewModule('"+Add_btn[i].textContent+"','"+unique_Id+"','"+workshop_index+"','"+mode+"')");
+          Add_btn[i].setAttribute("onclick", "addNewModule('"+Add_btn[i].textContent+"','"+unique_Id+"','"+workshop_index+"')");
         }
         // SAVE・DELETEボタンに機能付与
         const Save_btn = WorkshopContents.querySelector(".save-contents-btn");
@@ -100,7 +100,7 @@
         setInformationItem(moduleContainerElem, WORKSHOP)
         break;
       case "manager":
-        setSettingItem(moduleContainerElem, WORKSHOP);
+        setSettingItem(moduleContainerElem, WORKSHOP, is_new);
         break;
     }
 
@@ -112,11 +112,11 @@
       var question_i = question_list[i];
 
       // 質問モジュールを追加
-      setModuleItem(moduleContainerElem, question_i, workshop_index, i, mode);
+      setModuleItem(moduleContainerElem, question_i, workshop_index, i, is_new);
     }
   }
 
-  function changeBtnMark(clone, mode){
+  function changeBtnMark(clone){
     switch(mode){
       case "user":
         clone.getElementById("openModalBtn").innerHTML = "詳細　<i class=\"bi bi-calendar-check\"></i>";
@@ -127,7 +127,7 @@
     }
   }
   
-  function setSettingItem(containerElem, WORKSHOP){
+  function setSettingItem(containerElem, WORKSHOP, is_new){
     // 必須情報設定モジュールをクローン
     var SettingModule = TemplateSettingItem.content.cloneNode(true);
 
@@ -139,6 +139,15 @@
     SettingModule.getElementById("WorkshopSubscription").value = WORKSHOP["subscription"];
     SettingModule.getElementById("Location").value = WORKSHOP["location"];
     SettingModule.getElementById("numCapacity").value = WORKSHOP["capacity"];
+
+    // 既存の講座からは変更不可に
+    if (!is_new){
+      SettingModule.getElementById("WorkshopName").disabled = true;
+      SettingModule.getElementById("EventDate").disabled = true;
+      SettingModule.getElementById("StartTime").disabled = true;
+      SettingModule.getElementById("EndTime").disabled = true;
+      SettingModule.getElementById("Location").disabled = true;
+    }
 
     containerElem.appendChild(SettingModule);
   }
@@ -157,7 +166,7 @@
     containerElem.appendChild(InformationModule);
   }
   
-  function setModuleItem(containerElem, question, workshop_index, question_index, mode){
+  function setModuleItem(containerElem, question, workshop_index, question_index, is_new){
     // 対応するModuleテンプレートをクローンして、必要情報の変更
     switch(question["type"]){
       case "タイトルと説明":
@@ -173,6 +182,9 @@
             break;
           case "manager":
             moduleClone.querySelector("#moduleSubscription").value = question["subscription"];
+            if (!is_new){
+              moduleClone.querySelector("#moduleSubscription").disabled = true;
+            }
             // フッター追加
             setModuleFooter(moduleClone, false, true);
             break;
@@ -327,6 +339,9 @@
         break;
       case "manager":
         moduleClone.querySelector("#moduleTitle").value = question["title"];
+        if (!is_new){
+          moduleClone.querySelector("#moduleTitle").disabled = true;
+        }
         break;
     }
     moduleClone.querySelector(".module").setAttribute("id", "module-Q"+workshop_index+"-"+question_index);
@@ -337,8 +352,6 @@
     
     // ボタンに機能付与
     switch(mode){
-      case "user":
-        break;
       case "manager":
         // モジュールボタンの設定
         // trashボタンに、モジュール削除機能を付与
