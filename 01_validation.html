@@ -4,13 +4,6 @@
     console.log("start validation")
     const form = e.target.closest("form")
 
-    // ここどうしたらいいんだろー
-    console.log(form.checkValidity())
-    if (!form.checkValidity()) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
-
     // 質問項目リスト
     const question_modules = form.querySelector('.modal-body').children;
 
@@ -20,22 +13,24 @@
 
       // 必須項目指定してあれば
       if (question_i.querySelector('#require') != null){
+
         // 質問形式に合わせてvalidation
         switch(question_type){
           case "ラジオボタン":
           case "チェックボックス":
             var options = question_i.querySelector('#option-container').getElementsByClassName("option");
             var checkedCount = 0;
+            // チェック数カウント
             Array.prototype.slice.call(options).forEach(
               function(option){
-                console.log(option);
                 var option_input = option.querySelector("input");
                 if (option_input.checked){
                   checkedCount ++;
                 }
               }
             )
-            console.log(checkedCount)
+            
+            // チェック数に合わせてバリデーション表記
             if (checkedCount == 0){
               Array.prototype.slice.call(options).forEach(
                 function(option){
@@ -59,6 +54,7 @@
           default:
             question_i.classList.add('was-validated')
         }
+        
       }
     }
   }
