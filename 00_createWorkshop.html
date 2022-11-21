@@ -295,7 +295,8 @@
             for (let i=0; i < option.length; i++){
               var OptionClone = TemplateCheckboxOption.content.cloneNode(true);
               OptionClone.querySelector(".form-check-input").setAttribute("id", "Q"+workshop_index+"-"+question_index+"-"+i);
-              OptionClone.querySelector(".form-check-label").setAttribute("for", "Q"+workshop_index+"-"+question_index+"-"+i)
+              OptionClone.querySelector(".form-check-input").value = option[i]
+              OptionClone.querySelector(".form-check-label").setAttribute("for", "Q"+workshop_index+"-"+question_index+"-"+i);
               OptionClone.querySelector(".form-check-label").textContent = option[i];
               optionConteinerElem.appendChild(OptionClone);
             }
