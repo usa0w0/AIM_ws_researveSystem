@@ -211,6 +211,7 @@
             break;
         }
         break;
+
       case "長文回答":
         var moduleClone = ModuleParagraphTextItem.content.cloneNode(true);
 
@@ -325,6 +326,7 @@
       case "user":
         // 質問文
         var question_title = document.createElement('label');
+        question_title.setAttribute("class", "questionTitle");
         question_title.setAttribute("for", "Q"+workshop_index+"-"+question_index);
         question_title.textContent = question["title"];
         // 必須項目表示
