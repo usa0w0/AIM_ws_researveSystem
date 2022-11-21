@@ -7,14 +7,19 @@
     // 質問項目リスト
     const question_modules = form.querySelector('.modal-body').children;
 
+    // 回答
+    let answer = []
+
     for (let i=1; i<question_modules.length; i++){
       var question_i = question_modules[i];
-      var question_type = question_i.querySelector('.card-header').textContent
+      var question_type = question_i.querySelector('.card-header').textContent;
 
-      // 必須項目指定してあれば
-      if (question_i.querySelector('#require') != null){
+      if (question_type != "タイトルと説明"){
 
-        // 質問形式に合わせてvalidation
+        var question_title = question_i.querySelector('.questionTitle').textContent;
+        var answer_i = {No: i, label: question_title, value: ""};
+
+        // 質問形式に合わせて回答取得・validation
         switch(question_type){
           case "ラジオボタン":
           case "チェックボックス":
@@ -24,38 +29,52 @@
             Array.prototype.slice.call(options).forEach(
               function(option){
                 var option_input = option.querySelector("input");
+                // 選択肢がチェック済みだったら
                 if (option_input.checked){
+                  // チェックボックスの場合にはカンマ区切りに
+                  if (answer_i["value"] != ""){answer_i["value"] += ","}
+                  answer_i["value"] += option_input.value;
                   checkedCount ++;
                 }
               }
             )
             
-            // チェック数に合わせてバリデーション表記
-            if (checkedCount == 0){
-              Array.prototype.slice.call(options).forEach(
-                function(option){
-                  question_i.classList.remove('was-validated');
-                  option.classList.add("is-invalid");
-                  option.querySelector("input").classList.add("is-invalid");
-                }
-              );
-            } else {
-              Array.prototype.slice.call(options).forEach(
-                function(option){
-                  if (option.classList.remove("is-invalid")){
-                    option.querySelector("input").classList.remove("is-invalid");
+            // 必須項目指定してあれば
+            if (question_i.querySelector('#require') != null){
+              // チェック数に合わせてバリデーション表記
+              if (checkedCount == 0){
+                Array.prototype.slice.call(options).forEach(
+                  function(option){
+                    question_i.classList.remove('was-validated');
+                    option.classList.add("is-invalid");
+                    option.querySelector("input").classList.add("is-invalid");
                   }
-                  question_i.classList.add('was-validated');
-                }
-              );
+                );
+              } else {
+                Array.prototype.slice.call(options).forEach(
+                  function(option){
+                    if (option.classList.remove("is-invalid")){
+                      option.querySelector("input").classList.remove("is-invalid");
+                    }
+                    question_i.classList.add('was-validated');
+                  }
+                );
+              }
             }
             break;
 
           default:
-            question_i.classList.add('was-validated')
+            // 必須項目指定してあれば
+            if (question_i.querySelector('#require') != null){
+              question_i.classList.add('was-validated');
+            }
+            answer_i["value"] = question_i.querySelector(".questionInput").value;
         }
-        
-      }
+
+        answer.push(answer_i);
+      } 
     }
+
+    console.log(answer);
   }
 </script>
