@@ -47,7 +47,6 @@
           MODULE["option"] = []
           const optionItemElems = moduleElems[i].querySelector("#option-container").children;
           for (let j=0; j < optionItemElems.length; j++){
-            console.log(optionItemElems[j])
             MODULE["option"].push(optionItemElems[j].querySelector("#optionText").value);
           }
           MODULE["required"] = moduleElems[i].querySelector("#requiredSwitch").checked;
