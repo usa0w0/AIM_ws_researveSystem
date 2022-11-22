@@ -9,5 +9,3 @@ const Memberslist = SettingSpreadSheet.getSheetByName("管理者権限").getData
 // DBスプレッドシート
 const DBSpreadSheet = SpreadsheetApp.openById("1rs_eCD--OZPGFeo_Nd5tXKgoXDF0GgmFXQF6xENi3UE");
 const TemplateSheet = DBSpreadSheet.getSheetByName("template");
-const IdSheet = DBSpreadSheet.getSheetByName("ID対応表");
-const IdList = IdSheet.getDataRange().getValues().slice(1).reduce((IdList, [uuid, sheet_name]) => Object.assign(IdList, {[uuid]: DBSpreadSheet.getSheetByName(sheet_name)}), {});
