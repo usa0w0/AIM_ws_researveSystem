@@ -3,9 +3,8 @@ const mailAdress = Session.getActiveUser().getUserLoginId();
 let loginManagerName = "";
 
 // システム設定スプレッドシート
-const SettingSpreadSheet = SpreadsheetApp.openById("1r8rFRh-kApFbPuNxALtvhHG9ekGAjKkUlGUMImW1aFo");
-const Memberslist = SettingSpreadSheet.getSheetByName("管理者権限").getDataRange().getValues().flat();
+const Memberslist = ["c5622040@aoyama.jp", "篠原和真", "管理者"];
 
 // DBスプレッドシート
-const DBSpreadSheet = SpreadsheetApp.openById("1rs_eCD--OZPGFeo_Nd5tXKgoXDF0GgmFXQF6xENi3UE");
+const DBSpreadSheet = SpreadsheetApp.openById("1sj3AwNJmg0M_FL_6YcdJmF-ZtuqdcGavRqZPkIIOvIk");
 const TemplateSheet = DBSpreadSheet.getSheetByName("template");
