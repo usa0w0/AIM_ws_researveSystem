@@ -27,6 +27,10 @@ function updateProperty(WORKSHOP, unique_id){
   if (DBSheet == null){
     // 予約者シートをテンプレートからコピー
     DBSheet = TemplateSheet.copyTo(DBSpreadSheet).setName(WORKSHOP.name + "_" + unique_id);
+    // シートの保護
+    let protection = DBSheet.protect()
+    protection.removeEditors(protection.getEditors());
+
     // コピーしたシートに設定情報を転記
     const property = [WORKSHOP.name, WORKSHOP.date, WORKSHOP.start_time, WORKSHOP.end_time, WORKSHOP.capacity];
     DBSheet.getRange(3, 1, 1, 5).setValues([property]);
@@ -48,13 +52,14 @@ function deleteProperty(unique_id){
   // DBを参照
   var workshopDB = callDB();
   // uuidで指定して削除
+  const WORKSHOP = workshopDB[unique_id];
   delete workshopDB[unique_id]
   // json形式でスクリプトプロパティを更新
   const jsonData = JSON.stringify(workshopDB);
   PropertiesService.getScriptProperties().setProperty("講座情報", jsonData);
 
   // 予約者シート
-  const DBSheet = DBSpreadSheet.getSheetByName(WORKSHOP.neme + "_" + unique_id);
+  const DBSheet = DBSpreadSheet.getSheetByName(WORKSHOP.name + "_" + unique_id);
 
   // 既存のものか確認 -> シート削除
   if (DBSheet != null){
