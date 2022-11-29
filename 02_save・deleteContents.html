@@ -57,7 +57,7 @@
     }
     
     // スクリプトプロパティを更新・リロード
-    google.script.run.withSuccessHandler(function(r){reload(r)}).updateProperty(WORKSHOP, workshop_id);
+    google.script.run.withSuccessHandler(function(r){reload(r)}).updateProperty(workshop_id, WORKSHOP);
   }
 
   function deleteContents(e){
