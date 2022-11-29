@@ -1,14 +1,21 @@
 <!-- validation -->
 <script>
   function validation(e){
-    console.log("start validation")
+    // バリデーション対象
     const form = e.target.closest("form")
 
+    // ワークショップのuuid
+    const workshop_id = e.target.closest(".workshop-contents").id;
+    // ワークショップのタイトル
+    const workshop_name = form.querySelector("#WorkshopName").textContent;
+    
     // 質問項目リスト
     const question_modules = form.querySelector('.modal-body').children;
 
     // 回答
-    let answer = []
+    let answer = [];
+    // 制御用
+    let Terminal = true;
 
     for (let i=1; i<question_modules.length; i++){
       var question_i = question_modules[i];
@@ -50,6 +57,7 @@
                     option.querySelector("input").classList.add("is-invalid");
                   }
                 );
+                Terminal = false;
               } else {
                 Array.prototype.slice.call(options).forEach(
                   function(option){
@@ -69,6 +77,9 @@
               question_i.classList.add('was-validated');
             }
             answer_i["value"] = question_i.querySelector(".questionInput").value;
+            if (answer_i["value"] == ""){
+              Terminal = false;
+            }
         }
 
         answer.push(answer_i);
@@ -76,5 +87,11 @@
     }
 
     console.log(answer);
+    console.log("Terminal:", Terminal);
+
+    // テストリクエスト
+    if (Terminal){
+      google.script.run.withSuccessHandler(console.log("リクエスト送信")).saveRequest(workshop_id, answer)
+    }
   }
 </script>

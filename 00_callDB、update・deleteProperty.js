@@ -11,7 +11,7 @@ function callDB(){
   return workshopDB
 }
 
-function updateProperty(WORKSHOP, unique_id){
+function updateProperty(unique_id, WORKSHOP){
   // DBを参照
   var workshopDB = callDB();
   // uuidで指定して更新
@@ -21,7 +21,7 @@ function updateProperty(WORKSHOP, unique_id){
   PropertiesService.getScriptProperties().setProperty("講座情報", jsonData);
 
   // 予約者DBシート
-  let DBSheet = DBSpreadSheet.getSheetByName(WORKSHOP.neme + "_" + unique_id);
+  let DBSheet = DBSpreadSheet.getSheetByName(WORKSHOP.name + "_" + unique_id);
 
   // 既存のものか確認 -> 新規シート作成
   if (DBSheet == null){
@@ -35,6 +35,7 @@ function updateProperty(WORKSHOP, unique_id){
     const property = [WORKSHOP.name, WORKSHOP.date, WORKSHOP.start_time, WORKSHOP.end_time, WORKSHOP.capacity];
     DBSheet.getRange(3, 1, 1, 5).setValues([property]);
   }
+
   // 質問タイトルを取得
   let label_DB = ['タイムスタンプ', 'ユーザーアドレス'];
   WORKSHOP.question.forEach(function(MODULE){
@@ -42,6 +43,7 @@ function updateProperty(WORKSHOP, unique_id){
       label_DB.push(MODULE.title);
     }
   });
+  console.log([label_DB])
   // 予約者DBのラベルに
   DBSheet.getRange(6, 1, 1, label_DB.length).setValues([label_DB]);
 
@@ -71,6 +73,20 @@ function deleteProperty(unique_id){
 }
 
 function saveRequest(unique_id, ANSWER){
-  // 予約申請を保存させたい
+  // 予約者シートを取得
+  const DBSheets = DBSpreadSheet.getSheets();
+  let DBSheet
+  DBSheets.forEach(
+    function(sheet){
+      if (sheet.getSheetName().includes(unique_id)){
+         DBSheet = sheet
+      }
+    }
+  )
+  
+  // 回答を保存
+  let request = new Array(new Date(), mailAdress).concat(ANSWER.map(answer => answer.value));
+  DBSheet.getRange(DBSheet.getLastRow()+1, 1, 1, request.length).setValues([request]);
+
   return 0
 }
