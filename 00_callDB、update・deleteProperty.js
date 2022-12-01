@@ -1,14 +1,40 @@
 /*
 # ワークショップ管理
 dic workshopDB = {uuid: WORKSHOP, ... }
-dic WORKSHOP = {name: , date: , start_time: , end_time: , subscription: , capacity: , question: [MODULE, ... ]}
-dic MODULE = {type: , title: , subscription: (type:見出しのみ), required: (type:見出し以外), option: (ラジオボタン or チェックボックス のみ)}
+dic WORKSHOP = {name: , date: , start_time: , end_time: , subscription: , capacity: , question: [MODULE, ... ], request: }
+dic MODULE = {type: , title: , subscription: (type:見出しのみ), required: (type:見出し以外), option: (ラジオボタン or チェックボックス のみ), value: }
 */
 
-function callDB(){
+function callDB(mode){
   // スクリプトプロパティからDB取得
   const workshopDB = JSON.parse(PropertiesService.getScriptProperties().getProperty("講座情報"));
+
+  // ユーザーモード？の場合のみ、回答値を付与
+  if (mode == "user"){
+    for (let key in workshopDB){
+      workshopDB[key] = addRequest(key, workshopDB[key]);
+      workshopDB[key].request = true
+    }
+  }
+
   return workshopDB
+}
+
+function addRequest(key, WORKSHOP){
+  // 予約者シートを取得
+  DBSheet = DBSpreadSheet.getSheetByName(WORKSHOP.name + "_" + key);
+  const request = DBSheet.getRange(7, 1, DBSheet.getLastRow()-6, DBSheet.getLastColumn()).getValues().filter(data => data[1] == mailAdress).flat().slice(2);
+
+  // 質問モジュールを順に確認して回答値付与
+  WORKSHOP.question.forEach(
+    function(MODULE){
+      if (MODULE.type != "タイトルと説明"){
+        MODULE.value = request.shift()
+      }
+    }
+  )
+
+  return WORKSHOP
 }
 
 function updateProperty(unique_id, WORKSHOP){
