@@ -28,7 +28,7 @@
   const TemplateSaveDeleteBtn = document.getElementById("SaveDeleteBtnTemplate");
   const TemplateReserveBtn = document.getElementById("ReserveBtnTemplate");
 
-  function createWorkshop(WORKSHOP, unique_Id, isNew){
+  function createWorkshop(unique_Id, isNew, WORKSHOP){
     // カードのインデックスを取得（modalDivのid用）
     const workshop_index = document.getElementById("containerWorkshop").childElementCount;
 
@@ -39,6 +39,20 @@
     WorkshopContents.querySelector(".workshop-contents").setAttribute("id", unique_Id);
     WorkshopContents.getElementById("openModalBtn").setAttribute("data-bs-target", "#workshop-no"+workshop_index)
     WorkshopContents.getElementById("modalDiv").id = "workshop-no"+workshop_index;
+
+    // 予約済みのカードは色変更
+    if (mode=="user"){
+      if (WORKSHOP.request){
+        WorkshopContents.querySelector(".card-header").textContent = "予約済み";
+        WorkshopContents.querySelector(".card").classList.add("border-success");
+        WorkshopContents.querySelector(".card-body").classList.add("text-success");
+        WorkshopContents.querySelector("#openModalBtn").classList.add("btn-success");
+      } else {
+        WorkshopContents.querySelector(".card-header").textContent = "受付中";
+        WorkshopContents.querySelector(".card").classList.add("border-dark");
+        WorkshopContents.querySelector("#openModalBtn").classList.add("btn-primary");
+      }
+    }
 
     // カード中ボタンのマークを変更
     changeBtnMark(WorkshopContents);
