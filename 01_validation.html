@@ -86,12 +86,9 @@
       } 
     }
 
-    console.log(answer);
-    console.log("Terminal:", Terminal);
-
-    // テストリクエスト
+    // 回答をサーバへ送信
     if (Terminal){
-      google.script.run.withSuccessHandler(console.log("リクエスト送信")).saveRequest(workshop_id, answer)
+      google.script.run.saveRequest(workshop_id, answer)
     }
   }
 </script>
