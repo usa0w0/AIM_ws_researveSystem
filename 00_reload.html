@@ -14,7 +14,7 @@
         // ローディング表示解除
         document.getElementById("loading").style.display = "none";
       }
-    ).callDB();
+    ).callDB(mode);
   }
 
   function createWorkshopWithSort(workshopDB){
@@ -28,7 +28,7 @@
 
     // 実行
     for(let key in workshopDB_sorted){
-      createWorkshop(workshopDB_sorted[key], key, false);
+      createWorkshop(key, false, workshopDB_sorted[key]);
     }
   }
 </script>
