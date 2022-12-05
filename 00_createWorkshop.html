@@ -27,6 +27,7 @@
   // ボタン系テンプレート
   const TemplateSaveDeleteBtn = document.getElementById("SaveDeleteBtnTemplate");
   const TemplateReserveBtn = document.getElementById("ReserveBtnTemplate");
+  const TemplateCancelBtn = document.getElementById("CancelBtnTemplate");
 
   function createWorkshop(unique_Id, isNew, WORKSHOP){
     // カードのインデックスを取得（modalDivのid用）
@@ -41,17 +42,23 @@
     WorkshopContents.getElementById("modalDiv").id = "workshop-no"+workshop_index;
 
     // 予約済みのカードは色変更
-    if (mode=="user"){
-      if (WORKSHOP.request){
-        WorkshopContents.querySelector(".card-header").textContent = "予約済み";
-        WorkshopContents.querySelector(".card").classList.add("border-success");
-        WorkshopContents.querySelector(".card-body").classList.add("text-success");
-        WorkshopContents.querySelector("#openModalBtn").classList.add("btn-success");
-      } else {
-        WorkshopContents.querySelector(".card-header").textContent = "受付中";
+    switch(mode){
+      case "user":
+        if (WORKSHOP.request){
+          WorkshopContents.querySelector(".card-header").textContent = "予約済み";
+          WorkshopContents.querySelector(".card").classList.add("border-success");
+          WorkshopContents.querySelector(".card-body").classList.add("text-success");
+          WorkshopContents.querySelector("#openModalBtn").classList.add("btn-success");
+        } else {
+          WorkshopContents.querySelector(".card-header").textContent = "受付中";
+          WorkshopContents.querySelector(".card").classList.add("border-dark");
+          WorkshopContents.querySelector("#openModalBtn").classList.add("btn-primary");
+        }
+        break;
+
+      case "manager":
         WorkshopContents.querySelector(".card").classList.add("border-dark");
         WorkshopContents.querySelector("#openModalBtn").classList.add("btn-primary");
-      }
     }
 
     // カード中ボタンのマークを変更
@@ -66,13 +73,18 @@
     WorkshopContents.getElementById("workshopLabel").textContent = WORKSHOP["name"];
 
     // modalのフッターにボタンを追加
+    let BtnGroupClone
     switch(mode){
       case "user":
-        var BtnGroupClone = TemplateReserveBtn.content.cloneNode(true);
+        if (WORKSHOP.request){
+          BtnGroupClone = TemplateCancelBtn.content.cloneNode(true);
+        } else {
+          BtnGroupClone = TemplateReserveBtn.content.cloneNode(true);
+        }
         break;
       case "manager":
         // SAVE・DELETE・ADDボタン
-        var BtnGroupClone = TemplateSaveDeleteBtn.content.cloneNode(true);
+        BtnGroupClone = TemplateSaveDeleteBtn.content.cloneNode(true);
         break;
     }
     WorkshopContents.querySelector(".modal-footer").appendChild(BtnGroupClone);
@@ -85,9 +97,15 @@
     // イベントハンドラを付与
     switch(mode){
       case "user":
-        // validation
-        const Submit_btn = WorkshopContents.querySelector(".submit-contents-btn");
-        Submit_btn.addEventListener('click', validation);
+        if (WORKSHOP.request){
+          // cancel
+          const Cancel_btn = WorkshopContents.querySelector(".cancel-contents-btn");
+          Cancel_btn.addEventListener('click', cancel);
+        } else {
+          // validation
+          const Submit_btn = WorkshopContents.querySelector(".submit-contents-btn");
+          Submit_btn.addEventListener('click', validation);
+        } 
         break;
 
       case "manager":
@@ -217,6 +235,7 @@
             moduleClone.querySelector(".questionInput").setAttribute("id", "Q"+workshop_index+"-"+question_index);
             moduleClone.querySelector(".questionInput").setAttribute("name", "Q"+workshop_index+"-"+question_index);
             moduleClone.querySelector(".questionInput").setAttribute("required", question["required"]);
+            moduleClone.querySelector(".questionInput").value = question.value;
             moduleClone.querySelector(".questionInput").disabled = false;
             break;
           case "manager":
@@ -238,6 +257,7 @@
             moduleClone.querySelector(".questionInput").setAttribute("id", "Q"+workshop_index+"-"+question_index);
             moduleClone.querySelector(".questionInput").setAttribute("name", "Q"+workshop_index+"-"+question_index);
             moduleClone.querySelector(".questionInput").setAttribute("required", question["required"]);
+            moduleClone.querySelector(".questionInput").value = question.value;
             moduleClone.querySelector(".questionInput").disabled = false;
             break;
           case "manager":
@@ -265,9 +285,13 @@
               var OptionClone = TemplateChoiceOption.content.cloneNode(true);
               OptionClone.querySelector(".form-check-input").setAttribute("name", "Q"+workshop_index+"-"+question_index);
               OptionClone.querySelector(".form-check-input").setAttribute("id", "Q"+workshop_index+"-"+question_index+"-"+i);
-              OptionClone.querySelector(".form-check-input").setAttribute("required", question["required"]);
+              OptionClone.querySelector(".form-check-input").value = String(option[i])
               OptionClone.querySelector(".form-check-label").setAttribute("for", "Q"+workshop_index+"-"+question_index+"-"+i);
               OptionClone.querySelector(".form-check-label").textContent = option[i];
+              // 回答済みの場合
+              if (question.value == option[i]){
+                OptionClone.querySelector(".form-check-input").checked = true;
+              }
               optionConteinerElem.appendChild(OptionClone);
             }
             // validation text
@@ -309,9 +333,13 @@
             for (let i=0; i < option.length; i++){
               var OptionClone = TemplateCheckboxOption.content.cloneNode(true);
               OptionClone.querySelector(".form-check-input").setAttribute("id", "Q"+workshop_index+"-"+question_index+"-"+i);
-              OptionClone.querySelector(".form-check-input").value = option[i]
+              OptionClone.querySelector(".form-check-input").value = String(option[i])
               OptionClone.querySelector(".form-check-label").setAttribute("for", "Q"+workshop_index+"-"+question_index+"-"+i);
               OptionClone.querySelector(".form-check-label").textContent = option[i];
+              // 回答済みの場合
+              if (question.value.includes(option[i])){
+                OptionClone.querySelector(".form-check-input").checked = true;
+              }
               optionConteinerElem.appendChild(OptionClone);
             }
             // validation text
