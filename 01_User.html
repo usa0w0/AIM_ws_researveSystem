@@ -56,6 +56,12 @@
       resizeObserver.observe(document.querySelector("nav"));
 
       reload(0)
+
+      // 管理者ログインならば、モード変更ボタンを追加
+      const isManager = <?!=isManager ?>;
+      if (isManager){
+        document.body.appendChild(document.getElementById("manager-links").content.cloneNode(true));
+      }
     </script>
   </body>
 </html>

@@ -1,8 +1,10 @@
 function doGet(e) {
   console.log("ユーザーログイン：", mailAdress);
 
+  isManager = Memberslist[Memberslist.indexOf(mailAdress)+2] == "管理者"
+
   // 管理者
-  if (Memberslist[Memberslist.indexOf(mailAdress)+2] == "管理者"){
+  if (isManager){
 
     // URL?p=xxx で表示ページを切り替え可能
     let page;

@@ -58,6 +58,10 @@
 <template id="ReserveBtnTemplate">
   <button type="button" class="btn btn-primary submit-contents-btn">予約　<i class="bi bi-send"></i></button>
 </template>
+<!-- キャンセルボタン -->
+<template id="CancelBtnTemplate">
+  <button type="button" class="btn btn-primary cancel-contents-btn">キャンセル　<i class="bi bi-send"></i></button>
+</template>
 
 <!-- 以下、講座設定モジュールのテンプレート -->
 <!-- フッター -->
@@ -308,5 +312,19 @@
         <button type="button" class="btn btn-outline-secondary delete-option">×</button>
       </div>
     </label>
+  </div>
+</template>
+
+<template id="manager-links">
+  <div class="dropdown m-2">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+      開発用モード切り替え
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+      <li><a class="dropdown-item" href="https://script.google.com/a/macros/aoyama.jp/s/AKfycbwq-xsZqpBGittsBxHHEK-OOVVcA7f3ib_4cHmUKxU/dev?p=user">Dev - User</a></li>
+      <li><a class="dropdown-item" href="https://script.google.com/a/macros/aoyama.jp/s/AKfycbwq-xsZqpBGittsBxHHEK-OOVVcA7f3ib_4cHmUKxU/dev?p=manager">Dev - Manager</a></li>
+      <li><a class="dropdown-item" href="https://script.google.com/a/macros/aoyama.jp/s/AKfycbwq-xsZqpBGittsBxHHEK-OOVVcA7f3ib_4cHmUKxU/exec?p=user">Exe - User</a></li>
+      <li><a class="dropdown-item" href="https://script.google.com/a/macros/aoyama.jp/s/AKfycbwq-xsZqpBGittsBxHHEK-OOVVcA7f3ib_4cHmUKxU/exec?p=manager">Exe - Manager</a></li>
+    </ul>
   </div>
 </template>

@@ -45,18 +45,6 @@
       <button type="button" class="btn btn-outline-success btn-lg" onclick="reload()"><i class="bi bi-arrow-clockwise"></i></button>
     </div>
 
-    <div class="dropdown m-2">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        開発用モード切り替え
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        <li><a class="dropdown-item" href="https://script.google.com/a/macros/aoyama.jp/s/AKfycbwq-xsZqpBGittsBxHHEK-OOVVcA7f3ib_4cHmUKxU/dev?p=user">Dev - User</a></li>
-        <li><a class="dropdown-item" href="https://script.google.com/a/macros/aoyama.jp/s/AKfycbwq-xsZqpBGittsBxHHEK-OOVVcA7f3ib_4cHmUKxU/dev?p=manager">Dev - Manager</a></li>
-        <li><a class="dropdown-item" href="https://script.google.com/a/macros/aoyama.jp/s/AKfycbwq-xsZqpBGittsBxHHEK-OOVVcA7f3ib_4cHmUKxU/exec?p=user">Exe - User</a></li>
-        <li><a class="dropdown-item" href="https://script.google.com/a/macros/aoyama.jp/s/AKfycbwq-xsZqpBGittsBxHHEK-OOVVcA7f3ib_4cHmUKxU/exec?p=manager">Exe - Manager</a></li>
-      </ul>
-    </div>
-
     <?!= HtmlService.createHtmlOutputFromFile('00_createWorkshop').getContent(); ?>
     <?!= HtmlService.createHtmlOutputFromFile('00_reload').getContent(); ?>
     <?!= HtmlService.createHtmlOutputFromFile('02_add・delete-Module・Option').getContent(); ?>
@@ -92,6 +80,13 @@
         }
         return chars.join("");
       }
+      
+      // 管理者ログインならば、モード変更ボタンを追加
+      const isManager = <?!=isManager ?>;
+      if (isManager){
+        document.body.appendChild(document.getElementById("manager-links").content.cloneNode(true));
+      }
+      
     </script>
 
   </body>
