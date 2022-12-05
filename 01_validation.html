@@ -1,6 +1,9 @@
 <!-- validation -->
 <script>
   function validation(e){
+    // ローディング表示
+    document.getElementById("loading").style.display = "block";
+
     // バリデーション対象
     const form = e.target.closest("form")
 
@@ -88,7 +91,39 @@
 
     // 回答をサーバへ送信
     if (Terminal){
-      google.script.run.saveRequest(workshop_id, answer)
+      // 親要素を辿ってワークショップを取得
+      const contentsElem = e.target.closest(".workshop-contents");
+
+      // 展開中のモーダルを閉じる
+      bootstrap.Modal.getInstance(contentsElem.querySelector(".modal")).hide();
+
+      // 送信
+      google.script.run.withSuccessHandler(function(r){reload(r)}).saveRequest(workshop_id, workshop_name, answer);
+    } else {
+      // ローディング表示解除
+      document.getElementById("loading").style.display = "none";
+    }
+  }
+
+  function cancel(e){
+    // ローディング表示
+    document.getElementById("loading").style.display = "block";
+
+    // ワークショップのuuid
+    const workshop_id = e.target.closest(".workshop-contents").id;
+    // ワークショップのタイトル
+    const workshop_name = e.target.closest("form").querySelector("#WorkshopName").textContent;
+
+    var result = window.confirm('このワークショップの予約を取り消しますが、よろしいですか？');
+    if (result){
+      // 親要素を辿ってワークショップを取得
+      const contentsElem = e.target.closest(".workshop-contents");
+
+      // 展開中のモーダルを閉じる
+      bootstrap.Modal.getInstance(contentsElem.querySelector(".modal")).hide();
+
+      // キャンセル
+      google.script.run.withSuccessHandler(function(r){reload(r)}).cancelRequest(workshop_id, workshop_name)
     }
   }
 </script>
