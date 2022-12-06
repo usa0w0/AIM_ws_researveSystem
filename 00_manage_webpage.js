@@ -1,7 +1,6 @@
 function doGet(e) {
   console.log("ユーザーログイン：", mailAdress);
-
-  isManager = Memberslist[Memberslist.indexOf(mailAdress)+2] == "管理者"
+  isManager = managerData[mailAdress].status == "管理者";
 
   // 管理者
   if (isManager){
@@ -28,7 +27,7 @@ function doGet(e) {
         break; 
     }
 
-    loginManagerName = Memberslist[Memberslist.indexOf(mailAdress)+1];
+    loginManagerName = managerData[mailAdress].name;
     var app = HtmlService.createTemplateFromFile(page);
     return app.evaluate().setSandboxMode(HtmlService.SandboxMode.IFRAME).setTitle(pageTitle).addMetaTag('viewport', 'width=device-width, initial-scale=1');
   }
