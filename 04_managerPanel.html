@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+  </head>
+  <body>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col" style="width: 45%">メールアドレス</th>
+          <th scope="col" style="width: 25%">氏名</th>
+          <th scope="col" style="width: 30%">ステータス</th>
+        </tr>
+      </thead>
+      <tbody id="table-container">
+      </tbody>
+    </table>
+
+    <template id="table-data-template">
+      <tr>
+        <td id="mail-adress"></td>
+        <td id="name"></td>
+        <td id="status"></td>
+      </tr>
+    </template>
+
+    <form id="form-change" class="row needs-validation">
+      <div class="col-5 m-1">
+        <!-- <label for="input-mail-adress" class="form-label">メールアドレス</label> -->
+        <div class="input-group has-validation">
+          <input type="text" class="form-control" id="input-mail-adress" value="" required pattern="[a-c][0-9A-Ba-b][0-9A-Ba-b][0-9]{5}">
+          <span class="input-group-text" id="inputGroupPrepend">@aoyama.jp</span>
+          <div class="invalid-feedback">
+            Aoyama-mailを入力してください。
+          </div>
+        </div>
+      </div>
+      <div class="col-3 m-1">
+        <!-- <label for="input-name" class="form-label">氏名</label> -->
+        <input type="text" class="form-control" id="input-name" value="" required>
+        <div class="invalid-feedback">
+          氏名を入力してください。
+        </div>
+      </div>
+      <div class="col-3 m-1">
+        <!-- <label for="select-status" class="form-label">ステータス</label> -->
+        <select class="form-select" id="select-status" required>
+          <option selected disabled value=""></option>
+          <option value="管理者">管理者</option>
+          <option value="利用者">利用者</option>
+        </select>
+        <div class="invalid-feedback">
+          ステータスを入力してください。
+        </div>
+      </div>
+      <div class="col-12 m-1">
+        <button type="button" class="btn btn-primary" onclick="submitChange()">変更・追加</button>
+      </div>
+    </form>
+
+    <script>
+      google.script.run.withSuccessHandler(
+        function (data){
+          const template = document.getElementById('table-data-template');
+          const container = document.getElementById('table-container');
+          for (let mailAdress in data){
+            var clone = template.content.cloneNode(true);
+            clone.getElementById('mail-adress').textContent = mailAdress;
+            clone.getElementById('name').textContent = data[mailAdress].name;
+            clone.getElementById('status').textContent = data[mailAdress].status;
+            container.appendChild(clone);
+          }
+        }
+      ).getStatus();
+
+      function submitChange(){
+        const form = document.getElementById('form-change');
+        
+        form.classList.add('was-validated')
+        if (!form.checkValidity()) {
+          console.log("未入力あり");
+          return
+        }
+
+        const mailAdress = document.getElementById('input-mail-adress').value + "@aoyama.jp";
+        const name = document.getElementById('input-name').value;
+        const status = document.getElementById('select-status').value;
+
+        console.log("送信：", mailAdress, {name: name, status: status})
+
+        google.script.run.withSuccessHandler(function (return_value){google.script.host.close()}).saveStatus(mailAdress, {name: name, status: status})
+      }
+    </script>
+  </body>
+</html>
