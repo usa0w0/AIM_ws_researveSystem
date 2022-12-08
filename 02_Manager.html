@@ -80,9 +80,12 @@
         }
         return chars.join("");
       }
+    
+    </script>
+    <script>
       
       // 管理者ログインならば、モード変更ボタンを追加
-      const isManager = <?!=isManager ?>;
+      const isManager = "<?=isManager ?>";
       if (isManager){
         document.body.appendChild(document.getElementById("manager-links").content.cloneNode(true));
       }
