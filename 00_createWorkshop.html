@@ -28,6 +28,7 @@
   const TemplateSaveDeleteBtn = document.getElementById("SaveDeleteBtnTemplate");
   const TemplateReserveBtn = document.getElementById("ReserveBtnTemplate");
   const TemplateCancelBtn = document.getElementById("CancelBtnTemplate");
+  const TemplateNotBtn = document.getElementById("notBtnTemplate");
 
   function createWorkshop(unique_Id, isNew, WORKSHOP){
     console.log(WORKSHOP.name, WORKSHOP.date, WORKSHOP.isClosed)
@@ -96,6 +97,8 @@
       case "user":
         if (WORKSHOP.request){
           BtnGroupClone = TemplateCancelBtn.content.cloneNode(true);
+        } else if (WORKSHOP.isClosed){
+          BtnGroupClone = TemplateNotBtn.content.cloneNode(true);
         } else {
           BtnGroupClone = TemplateReserveBtn.content.cloneNode(true);
         }
@@ -119,11 +122,13 @@
           // cancel
           const Cancel_btn = WorkshopContents.querySelector(".cancel-contents-btn");
           Cancel_btn.addEventListener('click', cancel);
+        } else if (WORKSHOP.isClosed){
+          break;
         } else {
           // validation
           const Submit_btn = WorkshopContents.querySelector(".submit-contents-btn");
           Submit_btn.addEventListener('click', validation);
-        } 
+        }
         break;
 
       case "manager":
