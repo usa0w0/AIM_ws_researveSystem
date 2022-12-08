@@ -30,6 +30,8 @@
   const TemplateCancelBtn = document.getElementById("CancelBtnTemplate");
 
   function createWorkshop(unique_Id, isNew, WORKSHOP){
+    console.log(WORKSHOP.name, WORKSHOP.date, WORKSHOP.isClosed)
+
     // カードのインデックスを取得（modalDivのid用）
     const workshop_index = document.getElementById("containerWorkshop").childElementCount;
 
@@ -44,23 +46,38 @@
     // 予約済みのカードは色変更
     switch(mode){
       case "user":
+        // 予約済み
         if (WORKSHOP.request){
-          WorkshopContents.querySelector(".card-header").textContent = "予約済み";
-          WorkshopContents.querySelector(".card").classList.add("border-success");
-          WorkshopContents.querySelector(".card-body").classList.add("text-success");
-          WorkshopContents.querySelector("#openModalBtn").classList.add("btn-success");
+          if (WORKSHOP["isClosed"]){
+            WorkshopContents.querySelector(".card-header").textContent = "予約済み（締切済み）";
+            WorkshopContents.querySelector(".card").classList.add("border-danger");
+            WorkshopContents.querySelector(".card-body").classList.add("text-danger");
+            WorkshopContents.querySelector("#openModalBtn").classList.add("btn-danger");
+          } else {
+            WorkshopContents.querySelector(".card-header").textContent = "予約済み";
+            WorkshopContents.querySelector(".card").classList.add("border-success");
+            WorkshopContents.querySelector(".card-body").classList.add("text-success");
+            WorkshopContents.querySelector("#openModalBtn").classList.add("btn-success");
+          }
         } else {
-          WorkshopContents.querySelector(".card-header").textContent = "受付中";
-          WorkshopContents.querySelector(".card").classList.add("border-dark");
-          WorkshopContents.querySelector("#openModalBtn").classList.add("btn-primary");
+          if (WORKSHOP["isClosed"]){
+            WorkshopContents.querySelector(".card-header").textContent = "応募締切済み";
+            WorkshopContents.querySelector(".card").classList.add("border-danger");
+            WorkshopContents.querySelector(".card-body").classList.add("text-danger");
+            WorkshopContents.querySelector("#openModalBtn").classList.add("btn-danger");
+          } else {
+            WorkshopContents.querySelector(".card-header").textContent = "受付中";
+            WorkshopContents.querySelector(".card").classList.add("border-dark");
+            WorkshopContents.querySelector("#openModalBtn").classList.add("btn-primary");
+          }
         }
         break;
 
       case "manager":
         WorkshopContents.querySelector(".card").classList.add("border-dark");
         WorkshopContents.querySelector("#openModalBtn").classList.add("btn-primary");
+        break
     }
-    
 
     // カード中ボタンのマークを変更
     changeBtnMark(WorkshopContents);
@@ -155,7 +172,7 @@
         clone.getElementById("openModalBtn").innerHTML = "詳細　<i class=\"bi bi-calendar-check\"></i>";
         break;
       case "manager":
-        clone.getElementById("openModalBtn").innerHTML = "<i class=\"bi bi-tools\"></i>";
+        clone.getElementById("openModalBtn").innerHTML = "設定　<i class=\"bi bi-tools\"></i>";
         break;
     }
   }
