@@ -1,6 +1,6 @@
 function doGet(e) {
   console.log("ユーザーログイン：", mailAdress);
-  isManager = managerData[mailAdress].status == "管理者";
+  isManager = (managerData[mailAdress].status == "管理者");
 
   // 管理者
   if (isManager){
