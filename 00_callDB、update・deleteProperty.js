@@ -149,10 +149,10 @@ function deleteProperty(unique_id){
   // 予約者シート
   const DBSheet = DBSpreadSheet.getSheetByName(WORKSHOP.name + "_" + unique_id);
 
-  // 既存のものか確認 -> シート保護の削除
+  // 既存のものか確認 -> シート削除
   if (DBSheet != null){
-    // シートの保護を解除
-    DBSheet.unprotect()
+    // シート自体も削除
+    DBSpreadSheet.deleteSheet(DBSheet);
   }
 
   return 0;
