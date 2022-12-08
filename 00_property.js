@@ -10,4 +10,4 @@ const DBSpreadSheet = SpreadsheetApp.openById("1sj3AwNJmg0M_FL_6YcdJmF-ZtuqdcGav
 const TemplateSheet = DBSpreadSheet.getSheetByName("template");
 
 // サーバーサイド時刻
-const ServerTime = (new Date()).getTime();
+const ServerTime = new Date();

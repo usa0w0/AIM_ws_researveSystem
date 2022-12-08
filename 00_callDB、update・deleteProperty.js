@@ -1,7 +1,7 @@
 /*
 # ワークショップ管理
 dic workshopDB = {uuid: WORKSHOP, ... }
-dic WORKSHOP = {name: , date: , start_time: , end_time: , subscription: , capacity: , question: [MODULE, ... ], request: }
+dic WORKSHOP = {name: , date: , start_time: , end_time: , subscription: , capacity: , question: [MODULE, ... ], request: , isClosed: }
 dic MODULE = {type: , title: , subscription: (type:見出しのみ), required: (type:見出し以外), option: (ラジオボタン or チェックボックス のみ), value: }
 */
 
@@ -9,11 +9,36 @@ function callDB(mode){
   // スクリプトプロパティからDB取得
   const workshopDB = JSON.parse(PropertiesService.getScriptProperties().getProperty("講座情報"));
 
-  // ユーザーモード？の場合のみ、回答値を付与
-  if (mode == "user"){
-    for (let key in workshopDB){
+  const keys = Object.keys(workshopDB)
+
+  console.log(keys)
+
+  let key
+  let DBSheet
+
+  for (let i=keys.length-1; i>=0; i--){
+    key = keys[i]
+    DBSheet = DBSpreadSheet.getSheetByName(workshopDB[key].name + "_" + key);
+
+    // 締切系
+    if (new Date(workshopDB[key].date +" "+ workshopDB[key].end_time) < ServerTime){
+      // DBシートの保護を解除
+      DBSheet.getProtections(SpreadsheetApp.ProtectionType.SHEET)[0].remove();
+
+      // スクリプトプロパティを削除更新
+      delete workshopDB[key];
+      PropertiesService.getScriptProperties().setProperty("講座情報", JSON.stringify(workshopDB));
+
+      continue;
+    } else {
+      // 締切・定員判定
+      workshopDB[key].isClosed = (new Date(workshopDB[key].date) < ServerTime || DBSheet.getLastRow()-6 >= workshopDB[key].capacity);
+    }
+
+    // ユーザーモードの場合のみ
+    if (mode == "user"){
+      // 回答値を付与
       workshopDB[key] = addRequest(key, workshopDB[key]);
-      workshopDB[key].request = true
     }
   }
 
@@ -21,15 +46,50 @@ function callDB(mode){
 }
 
 function addRequest(key, WORKSHOP){
+  // 排他処理を開始する
+  const lock = LockService.getScriptLock();
+
+  // 30秒間、ロックを獲得するまで待機する
+  // ロックを獲得できなかった場合は、1秒後に再度実行する
+  while (true) {
+    try {
+      lock.waitLock(30000);
+      break;
+    } catch (error) {
+      Utilities.sleep(1);
+    }
+  }
+  
   // 予約者シートを取得
   DBSheet = DBSpreadSheet.getSheetByName(WORKSHOP.name + "_" + key);
-  const request = DBSheet.getRange(7, 1, DBSheet.getLastRow()-6, DBSheet.getLastColumn()).getValues().filter(data => data[1] == mailAdress).flat().slice(2);
+  const data = DBSheet.getRange(6, 1, DBSheet.getLastRow()-5, DBSheet.getLastColumn()).getValues();
 
+  let request
+  // 回答済みかチェック
+  if (data.map(row => row[1]).includes(mailAdress)){
+    WORKSHOP.request = true
+
+    // 回答データ
+    request = data.filter(row => row[1] == mailAdress).flat().slice(2);
+  } else {
+    // 空の回答データ
+    request = new Array(DBSheet.getLastColumn()).fill('');
+  }
+
+  // 排他処理を終了する
+  lock.releaseLock();
+  
   // 質問モジュールを順に確認して回答値付与
   WORKSHOP.question.forEach(
     function(MODULE){
-      if (MODULE.type != "タイトルと説明"){
-        MODULE.value = request.shift()
+      switch(MODULE.type){
+        case "タイトルと説明":
+          break
+        case "チェックボックス":
+          MODULE.value = request.shift().split(',')
+          break
+        default:
+          MODULE.value = request.shift()
       }
     }
   )
@@ -89,30 +149,37 @@ function deleteProperty(unique_id){
   // 予約者シート
   const DBSheet = DBSpreadSheet.getSheetByName(WORKSHOP.name + "_" + unique_id);
 
-  // 既存のものか確認 -> シート削除
+  // 既存のものか確認 -> シート保護の削除
   if (DBSheet != null){
-    // シート自体も削除
-    DBSpreadSheet.deleteSheet(DBSheet);
+    // シートの保護を解除
+    DBSheet.unprotect()
   }
 
   return 0;
 }
 
-function saveRequest(unique_id, ANSWER){
+function saveRequest(unique_id, workshop_name, ANSWER){
   // 予約者シートを取得
-  const DBSheets = DBSpreadSheet.getSheets();
-  let DBSheet
-  DBSheets.forEach(
-    function(sheet){
-      if (sheet.getSheetName().includes(unique_id)){
-         DBSheet = sheet
-      }
-    }
-  )
+  const DBSheet = DBSpreadSheet.getSheetByName(workshop_name + "_" + unique_id);
   
   // 回答を保存
   let request = new Array(new Date(), mailAdress).concat(ANSWER.map(answer => answer.value));
   DBSheet.getRange(DBSheet.getLastRow()+1, 1, 1, request.length).setValues([request]);
+
+  return 0
+}
+
+function cancelRequest(unique_id, workshop_name){
+  // 予約者シートを取得
+  const DBSheet = DBSpreadSheet.getSheetByName(workshop_name + "_" + unique_id);
+  const data = DBSheet.getDataRange().getValues();
+
+  for (let i=0; i<DBSheet.getLastRow(); i++){
+    console.log(data[i])
+    if (data[i][1] == mailAdress){
+      DBSheet.deleteRow(i+1)
+    }
+  }
 
   return 0
 }
