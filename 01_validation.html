@@ -1,6 +1,7 @@
 <!-- validation -->
 <script>
   function validation(e){
+    console.log('start validation')
     // ローディング表示
     document.getElementById("loading").style.display = "block";
 
@@ -75,13 +76,14 @@
             break;
 
           default:
+            answer_i["value"] = question_i.querySelector(".questionInput").value;
             // 必須項目指定してあれば
             if (question_i.querySelector('#require') != null){
               question_i.classList.add('was-validated');
-            }
-            answer_i["value"] = question_i.querySelector(".questionInput").value;
-            if (answer_i["value"] == ""){
-              Terminal = false;
+
+              if (answer_i["value"] == ""){
+                Terminal = false;
+              }
             }
         }
 
