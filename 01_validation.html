@@ -100,7 +100,7 @@
       bootstrap.Modal.getInstance(contentsElem.querySelector(".modal")).hide();
 
       // 送信
-      google.script.run.withSuccessHandler(function(r){reload(r)}).saveRequest(workshop_id, workshop_name, answer);
+      google.script.run.withSuccessHandler(function(r){reload(r)}).saveRequest(workshop_id, answer);
     } else {
       // ローディング表示解除
       document.getElementById("loading").style.display = "none";
@@ -125,7 +125,9 @@
       bootstrap.Modal.getInstance(contentsElem.querySelector(".modal")).hide();
 
       // キャンセル
-      google.script.run.withSuccessHandler(function(r){reload(r)}).cancelRequest(workshop_id, workshop_name)
+      google.script.run.withSuccessHandler(function(r){reload(r)}).cancelRequest(workshop_id)
+      // ローディング表示解除
+      document.getElementById("loading").style.display = "none";
     }
   }
 </script>

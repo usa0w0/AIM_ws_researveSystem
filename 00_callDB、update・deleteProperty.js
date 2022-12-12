@@ -158,10 +158,15 @@ function deleteProperty(unique_id){
   return 0;
 }
 
-function saveRequest(unique_id, workshop_name, ANSWER){
+function saveRequest(unique_id, ANSWER){
+  const WORKSHOP = callDB()[unique_id]
+  const workshop_name = WORKSHOP.name
+
   // 予約者シートを取得
   const DBSheet = DBSpreadSheet.getSheetByName(workshop_name + "_" + unique_id);
   
+  console.log(ANSWER)
+
   // 回答を保存
   let request = new Array(new Date(), mailAdress).concat(ANSWER.map(answer => answer.value));
   DBSheet.getRange(DBSheet.getLastRow()+1, 1, 1, request.length).setValues([request]);
@@ -169,7 +174,10 @@ function saveRequest(unique_id, workshop_name, ANSWER){
   return 0
 }
 
-function cancelRequest(unique_id, workshop_name){
+function cancelRequest(unique_id){
+  const WORKSHOP = callDB()[unique_id]
+  const workshop_name = WORKSHOP.name
+
   // 予約者シートを取得
   const DBSheet = DBSpreadSheet.getSheetByName(workshop_name + "_" + unique_id);
   const data = DBSheet.getDataRange().getValues();

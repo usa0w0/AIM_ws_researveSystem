@@ -11,3 +11,6 @@ const TemplateSheet = DBSpreadSheet.getSheetByName("template");
 
 // サーバーサイド時刻
 const ServerTime = new Date();
+
+// メール用
+const MAIL_CC = 'sagamipro-contact@aim.aoyama.ac.jp'
