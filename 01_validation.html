@@ -1,7 +1,6 @@
 <!-- validation -->
 <script>
   function validation(e){
-    console.log('start validation')
     // ローディング表示
     document.getElementById("loading").style.display = "block";
 
@@ -126,6 +125,7 @@
 
       // キャンセル
       google.script.run.withSuccessHandler(function(r){reload(r)}).cancelRequest(workshop_id)
+    } else {
       // ローディング表示解除
       document.getElementById("loading").style.display = "none";
     }
