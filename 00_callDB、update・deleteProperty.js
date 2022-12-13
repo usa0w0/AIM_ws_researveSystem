@@ -15,13 +15,15 @@ function callDB(mode){
 
   let key
   let DBSheet
+  let deadline
 
   for (let i=keys.length-1; i>=0; i--){
     key = keys[i]
     DBSheet = DBSpreadSheet.getSheetByName(workshopDB[key].name + "_" + key);
 
     // 締切系
-    if (new Date(workshopDB[key].date +" "+ workshopDB[key].end_time) < ServerTime){
+    deadline = (new Date(workshopDB[key].date +" "+ workshopDB[key].end_time) < ServerTime);
+    if (deadline){
       // DBシートの保護を解除
       DBSheet.getProtections(SpreadsheetApp.ProtectionType.SHEET)[0].remove();
 
