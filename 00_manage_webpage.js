@@ -1,6 +1,6 @@
 function doGet(e) {
   console.log("ユーザーログイン：", mailAdress);
-  isManager = (managerData[mailAdress].status == "管理者");
+  isManager = (mailAdress in managerData && managerData[mailAdress].status == "管理者");
 
   // 管理者
   if (isManager){
@@ -33,7 +33,7 @@ function doGet(e) {
   }
 
   // 利用者
-  else if (!Memberslist.includes(mailAdress) || Memberslist[Memberslist.indexOf(mailAdress)+2] == ""){
+  else {
     var app = HtmlService.createTemplateFromFile("01_User.html");
     return app.evaluate().setSandboxMode(HtmlService.SandboxMode.IFRAME).setTitle("予約フォーム").addMetaTag('viewport', 'width=device-width, initial-scale=1');
   } 
