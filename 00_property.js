@@ -1,5 +1,6 @@
 // ログインユーザーのメールアドレス
 const mailAdress = Session.getActiveUser().getUserLoginId();
+// const mailAdress = 'example@aoyama.jp';
 let loginManagerName = "";
 
 // システム設定スプレッドシート
