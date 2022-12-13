@@ -49,20 +49,13 @@
       case "user":
         // 予約済み
         if (WORKSHOP.request){
-          if (WORKSHOP["isClosed"]){
-            WorkshopContents.querySelector(".card-header").textContent = "予約済み（締切済み）";
-            WorkshopContents.querySelector(".card").classList.add("border-danger");
-            WorkshopContents.querySelector(".card-body").classList.add("text-danger");
-            WorkshopContents.querySelector("#openModalBtn").classList.add("btn-danger");
-          } else {
-            WorkshopContents.querySelector(".card-header").textContent = "予約済み";
-            WorkshopContents.querySelector(".card").classList.add("border-success");
-            WorkshopContents.querySelector(".card-body").classList.add("text-success");
-            WorkshopContents.querySelector("#openModalBtn").classList.add("btn-success");
-          }
+          WorkshopContents.querySelector(".card-header").textContent = "予約済み";
+          WorkshopContents.querySelector(".card").classList.add("border-success");
+          WorkshopContents.querySelector(".card-body").classList.add("text-success");
+          WorkshopContents.querySelector("#openModalBtn").classList.add("btn-success");
         } else {
           if (WORKSHOP["isClosed"]){
-            WorkshopContents.querySelector(".card-header").textContent = "応募締切済み";
+            WorkshopContents.querySelector(".card-header").textContent = "満員御礼";
             WorkshopContents.querySelector(".card").classList.add("border-danger");
             WorkshopContents.querySelector(".card-body").classList.add("text-danger");
             WorkshopContents.querySelector("#openModalBtn").classList.add("btn-danger");
