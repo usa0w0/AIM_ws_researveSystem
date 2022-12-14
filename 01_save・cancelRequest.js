@@ -4,8 +4,6 @@ function saveRequest(unique_id, ANSWER){
 
 	// 予約者シートを取得
 	const DBSheet = DBSpreadSheet.getSheetByName(workshop_name + "_" + unique_id);
-	
-	console.log(ANSWER)
 
 	// 回答を保存
 	let request = new Array(new Date(), mailAdress).concat(ANSWER.map(answer => answer.value));
@@ -23,7 +21,6 @@ function cancelRequest(unique_id){
 	const data = DBSheet.getDataRange().getValues();
 
 	for (let i=0; i<DBSheet.getLastRow(); i++){
-		console.log(data[i])
 		if (data[i][1] == mailAdress){
 			DBSheet.deleteRow(i+1)
 		}

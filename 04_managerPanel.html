@@ -81,15 +81,12 @@
         
         form.classList.add('was-validated')
         if (!form.checkValidity()) {
-          console.log("未入力あり");
           return
         }
 
         const mailAdress = document.getElementById('input-mail-adress').value + "@aoyama.jp";
         const name = document.getElementById('input-name').value;
         const status = document.getElementById('select-status').value;
-
-        console.log("送信：", mailAdress, {name: name, status: status})
 
         google.script.run.withSuccessHandler(function (return_value){google.script.host.close()}).saveStatus(mailAdress, {name: name, status: status})
       }

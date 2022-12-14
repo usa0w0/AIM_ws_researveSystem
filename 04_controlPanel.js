@@ -21,7 +21,6 @@ function setMenu(){
 }
 
 function saveStatus(id, data){
-  console.log(id, data)
   // ステータスデータを更新
   managerData[id] = data
   // JSON形式にしてスクリプトプロパティを更新
