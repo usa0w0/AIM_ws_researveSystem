@@ -11,8 +11,6 @@ function callDB(mode){
 
   const keys = Object.keys(workshopDB)
 
-  console.log(keys)
-
   let key
   let DBSheet
   let deadline
@@ -131,7 +129,7 @@ function updateProperty(unique_id, WORKSHOP){
       label_DB.push(MODULE.title);
     }
   });
-  console.log([label_DB])
+  
   // 予約者DBのラベルに
   DBSheet.getRange(6, 1, 1, label_DB.length).setValues([label_DB]);
 
