@@ -141,6 +141,12 @@ function updateProperty(unique_id, WORKSHOP){
 function deleteProperty(unique_id){
   // DBを参照
   var workshopDB = callDB();
+
+  // 新規フォーム作成中に削除した場合
+  if (!(unique_id in workshopDB)){
+    return 0
+  }
+
   // uuidで指定して削除
   const WORKSHOP = workshopDB[unique_id];
   delete workshopDB[unique_id]
