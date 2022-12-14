@@ -3,17 +3,13 @@
 ## 概要
 開催予定のワークショップを一覧で確認でき、簡単に予約・キャンセルができるフォームアプリ
 
-## URL (※Chrome推奨)
-- [システムデモ](https://script.google.com/macros/s/AKfycbyAnBluPHYrX6RY7lADeC0DCnCzBTi4PElMXsmjeBbBttzsVXXY4yYOtpp_tsJGP8to/exec)
-- [予約者DB（デモ）](https://docs.google.com/spreadsheets/d/14P-oIABdGodeiXzJ_KCYXiy8z7f30MnzrYaQwuBlq2c/edit?usp=sharing)
-
----
+## URL
+- [予約システム（デモ）](https://script.google.com/macros/s/AKfycbyAnBluPHYrX6RY7lADeC0DCnCzBTi4PElMXsmjeBbBttzsVXXY4yYOtpp_tsJGP8to/exec)
+- [予約者情報DB（デモ）](https://docs.google.com/spreadsheets/d/14P-oIABdGodeiXzJ_KCYXiy8z7f30MnzrYaQwuBlq2c/edit?usp=sharing)
 
 ## 目的
 現在、青山学院大学附置情報メディアセンターに属するAIM Commonsでは、様々なワークショップを提供している。
 今後より一層活発に企画していくために、利用者が容易に存在を知ることができ、申し込めるようなシステムの開発を目的とする。
-
----
 
 ## 機能一覧
 ### 利用者画面
@@ -64,30 +60,36 @@
 			<td>フォーム情報の削除</td>
 			<td>
 				モーダルウィンドウ下部の、<code>削除</code>ボタンから、フォームを削除することができる。
-				注意として、フォーム情報は削除されるが、回答情報は削除されない。
 			</td>
 		</tr>
 		<tr>
-			<td rowspan='3'>利用者画面</td>
+			<td rowspan='2'>利用者画面</td>
 			<td>募集中のワークショップの確認</td>
-			<td></td>
+			<td>
+				募集中のワークショップが、カード形式で一覧表示される。
+				応募有無や定員、期日に応じたステータスをデザインで可視化。
+			</td>
 		</tr>
 		<tr>
-			<td>募集の終了したワークショップの確認</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td>予約済みのワークショップの確認</td>
-			<td></td>
+			<td>ワークショップへの予約（フォームへの回答）</td>
+			<td>
+				<code>詳細</code>から、概要などを確認し、フォームに回答できる。
+				送信された回答は、検証にかけられ、回答に不足がある場合には、警告が表示される。
+			</td>
 		</tr>
 		<tr>
 			<td rowspan='2'>サーバーサイド</td>
 			<td>終了したワークショップの自動削除</td>
-			<td></td>
+			<td>
+				ユーザーがアクセスした際、データベースからワークショップの募集情報を取得するとともに、終了したものについては、フォーム情報を削除する。
+				注意として、フォーム情報は削除されるが、回答情報は削除されない（事後アンケート等、開催後の連絡のために）。
+			</td>
 		</tr>
 		<tr>
 			<td>管理者ステータスの変更</td>
-			<td></td>
+			<td>
+				予約者情報データベース
+			</td>
 		</tr>
 	</tbody>
 </table>
