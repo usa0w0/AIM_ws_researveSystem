@@ -8,7 +8,7 @@
 - [予約者情報DB（デモ）](https://docs.google.com/spreadsheets/d/14P-oIABdGodeiXzJ_KCYXiy8z7f30MnzrYaQwuBlq2c/edit?usp=sharing)
 
 [^browser]: chrome推奨
-[^user]: 青山学院大学に所属する学生を対象としているため、本来は大学から付与されたGsuitアカウントでのアクセスを想定している。そのため一般公開デモでは、<code>example@aoyama.jp</code>という擬似ユーザーでアクセスするようになっている。
+[^user]: 青山学院大学に所属する学生を対象としているため、本来は大学から付与されたGoogleアカウントでのアクセスを想定している。そのため一般公開デモでは、<code>example@aoyama.jp</code>という擬似ユーザーでアクセスするようになっている。
 
 ## 目的
 現在、青山学院大学附置情報メディアセンターに属するAIM Commonsでは、様々なワークショップを提供している。
@@ -16,6 +16,12 @@
 
 ## システム構成
 ![GASをベースとしたシステムの構成図](fig_system_config.png)
+
+## 使用技術
+- サーバー：GoogleDrive, GoogleAppScript
+- ログイン機構：Google Workspace（Aoyama-mail）
+- 表示：JavaScript, HTML, CSS
+- デザインフレームワーク：Bootstrap5
 
 ## 機能一覧
 <table>
