@@ -18,7 +18,7 @@
 ![GASをベースとしたシステムの構成図](fig_system_config.png)
 
 ## 使用技術
-- サーバー：GoogleDrive, GoogleAppScript
+- サーバー：GoogleDrive, GoogleAppsScript
 - ログイン機構：Google Workspace（Aoyama-mail）
 - 表示：JavaScript, HTML, CSS
 - デザインフレームワーク：Bootstrap5
