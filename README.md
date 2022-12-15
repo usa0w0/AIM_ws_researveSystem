@@ -77,8 +77,13 @@
 		<tr>
 			<td>管理者ステータスの変更</td>
 			<td>
-				予約者情報データベース
+				<a href="https://docs.google.com/spreadsheets/d/14P-oIABdGodeiXzJ_KCYXiy8z7f30MnzrYaQwuBlq2c/edit?usp=sharing">予約者情報データベース</a>のメニューバーに追加した<code>管理者設定</code>から、管理パネルを開くことで、ユーザーへ権限の付与・変更ができる。
 			</td>
 		</tr>
 	</tbody>
 </table>
+
+## 今後の実装予定
+- 予約・キャンセル受付メールの自動送信
+- 前日リマインダーや事後アンケートメールといった諸連絡ツールの実装
+- キャンセル待ちの受付
