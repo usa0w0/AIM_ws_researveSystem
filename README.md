@@ -4,28 +4,17 @@
 開催予定のワークショップを一覧で確認でき、簡単に予約・キャンセルができるフォームアプリ
 
 ## URL
-- [予約システム（デモ）](https://script.google.com/macros/s/AKfycbyAnBluPHYrX6RY7lADeC0DCnCzBTi4PElMXsmjeBbBttzsVXXY4yYOtpp_tsJGP8to/exec)
+- [予約システム（デモ）](https://script.google.com/macros/s/AKfycbyAnBluPHYrX6RY7lADeC0DCnCzBTi4PElMXsmjeBbBttzsVXXY4yYOtpp_tsJGP8to/exec)[^browser][^user]
 - [予約者情報DB（デモ）](https://docs.google.com/spreadsheets/d/14P-oIABdGodeiXzJ_KCYXiy8z7f30MnzrYaQwuBlq2c/edit?usp=sharing)
+
+[^browser]: chrome推奨
+[^user]: 青山学院大学に所属する学生を対象としているため、本来は大学から付与されたGsuitアカウントでのアクセスを想定している。そのため一般公開デモでは、<code>example@aoyama.jp</code>という擬似ユーザーでアクセスするようになっている。
 
 ## 目的
 現在、青山学院大学附置情報メディアセンターに属するAIM Commonsでは、様々なワークショップを提供している。
 今後より一層活発に企画していくために、利用者が容易に存在を知ることができ、申し込めるようなシステムの開発を目的とする。
 
 ## 機能一覧
-### 利用者画面
-- 募集中のワークショップの確認
-  - フォームへの回答・応募
-- 募集の終了したワークショップの確認
-- 予約済みフォームの表示
-  - 回答内容の確認
-  - 応募のキャンセル
-
-### サーバーサイド
-- 回答のバリデーション
-- 終了したワークショップの削除
-- 管理者ステータスの変更
-
-## 機能一覧（表）
 <table>
 	<thead>
 		<tr>
